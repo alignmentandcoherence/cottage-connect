@@ -1,0 +1,885 @@
+<title>Cottage Connect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: app shell. Sidebar on wide screens, bottom tab bar on phones; sheets slide over. */
+:root {
+  --bg: #eef0e6; --surface: #fbfcf7; --sunken: #e3e7d8; --line: #d3d9c4;
+  --fg: #23291d; --muted: #66705a; --moss: #4d6a35; --moss-ink: #ffffff;
+  --clay: #a85a33; --hay: #c49a3c; --soft-moss: #dfe8d2; --soft-clay: #f2e1d5;
+  --shadow: 0 10px 30px rgba(35, 41, 29, .16);
+  --display: "Young Serif", Georgia, "Times New Roman", serif;
+  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #141811; --surface: #1d2219; --sunken: #262c21; --line: #343c2c;
+  --fg: #e8ecdf; --muted: #a2ac94; --moss: #8db36a; --moss-ink: #10140d;
+  --clay: #df8d61; --hay: #d9b25c; --soft-moss: #2a3622; --soft-clay: #3a2a20;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .5); color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #141811; --surface: #1d2219; --sunken: #262c21; --line: #343c2c;
+  --fg: #e8ecdf; --muted: #a2ac94; --moss: #8db36a; --moss-ink: #10140d;
+  --clay: #df8d61; --hay: #d9b25c; --soft-moss: #2a3622; --soft-clay: #3a2a20;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .5); color-scheme: dark; }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--body); }
+button, input, textarea, select { font: inherit; color: inherit; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; line-height: 1.2; }
+h1 { font-size: 1.75rem; } h2 { font-size: 1.3rem; } h3 { font-size: 1.05rem; font-family: var(--body); font-weight: 600; }
+p { margin: 0; }
+a { color: var(--moss); }
+:focus-visible { outline: 2px solid var(--moss); outline-offset: 2px; }
+
+.app { display: grid; grid-template-columns: 230px minmax(0, 1fr); min-height: 100%; }
+.side { border-right: 1px solid var(--line); padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh; }
+.brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 16px; font-family: var(--display); font-size: 1.2rem; }
+.brand svg { flex: none; }
+.navbtn { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; background: none; padding: 9px 10px; border-radius: 10px; cursor: pointer; text-align: left; color: var(--fg); }
+.navbtn:hover { background: var(--sunken); }
+.navbtn[aria-current="true"] { background: var(--soft-moss); color: var(--moss); font-weight: 600; }
+.navbtn.soon { color: var(--muted); cursor: default; }
+.navbtn.soon:hover { background: none; }
+.side-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 16px 10px 4px; }
+.badge { margin-left: auto; background: var(--clay); color: #fff; border-radius: 999px; font-size: .72rem; font-weight: 700; padding: 1px 7px; font-variant-numeric: tabular-nums; }
+
+.main { min-width: 0; padding-inline: 16px; padding-block: 0 96px; }
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); display: flex; align-items: center; gap: 12px; padding-block: 14px; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
+.topbar h1 { flex: 1; min-width: 0; font-size: 1.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.content { max-width: 760px; margin: 0 auto; display: grid; gap: 16px; }
+.wide .content { max-width: 1000px; }
+
+.tabbar { display: none; }
+@media (max-width: 760px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .side { display: none; }
+  .tabbar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 20; background: var(--surface); border-top: 1px solid var(--line); padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)); }
+  .tab { flex: 1; border: 0; background: none; display: grid; justify-items: center; gap: 2px; font-size: .7rem; color: var(--muted); padding: 4px 0; position: relative; cursor: pointer; }
+  .tab[aria-current="true"] { color: var(--moss); font-weight: 600; }
+  .tab .badge { position: absolute; top: 0; left: 55%; margin: 0; }
+}
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; }
+.btn:hover { border-color: var(--moss); }
+.btn.primary { background: var(--moss); border-color: var(--moss); color: var(--moss-ink); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.danger { color: var(--clay); }
+.btn.block { width: 100%; padding: 12px; }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+.iconbtn { border: 0; background: none; cursor: pointer; padding: 4px; border-radius: 999px; display: inline-flex; color: var(--fg); }
+.iconbtn:hover { background: var(--sunken); }
+.linkbtn { border: 0; background: none; color: var(--moss); font-weight: 600; cursor: pointer; padding: 0; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.panel > .row + .row { border-top: 1px solid var(--line); }
+.panel-head { padding: 12px 16px 0; font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+.pad { padding: 14px 16px; display: grid; gap: 10px; }
+.row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; width: 100%; background: none; border: 0; text-align: left; cursor: pointer; color: inherit; }
+button.row:hover, .row.click:hover { background: var(--sunken); }
+.row .grow { flex: 1; min-width: 0; }
+.row .title { font-weight: 600; }
+.sub { color: var(--muted); font-size: .88rem; }
+.tiny { color: var(--muted); font-size: .78rem; }
+.chev { color: var(--muted); flex: none; }
+.empty { padding: 18px 16px; color: var(--muted); }
+.note { padding: 12px 14px; border-radius: 12px; background: var(--soft-moss); color: var(--fg); display: flex; gap: 10px; align-items: flex-start; font-size: .92rem; }
+.note.clay { background: var(--soft-clay); }
+.note svg { flex: none; margin-top: 2px; color: var(--moss); }
+.note.clay svg { color: var(--clay); }
+
+.tag { display: inline-flex; align-items: center; font-size: .74rem; font-weight: 600; padding: 2px 9px; border-radius: 999px; background: var(--soft-moss); color: var(--moss); white-space: nowrap; }
+.tag.clay { background: var(--soft-clay); color: var(--clay); }
+.tag.grey { background: var(--sunken); color: var(--muted); }
+
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.chip { flex: none; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 13px; cursor: pointer; font-size: .88rem; }
+.chip[aria-pressed="true"] { background: var(--moss); border-color: var(--moss); color: var(--moss-ink); }
+.seg { display: inline-flex; background: var(--sunken); border-radius: 10px; padding: 3px; gap: 2px; }
+.seg button { border: 0; background: none; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: .88rem; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--fg); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.search { flex: 1; min-width: 180px; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 9px 12px; }
+
+.avatar { flex: none; border-radius: 999px; display: grid; place-items: center; color: #fff; font-weight: 700; letter-spacing: .02em; }
+.cat { flex: none; width: 40px; height: 40px; border-radius: 12px; background: var(--soft-moss); color: var(--moss); display: grid; place-items: center; }
+
+.item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; align-content: start; text-align: left; cursor: pointer; color: inherit; }
+.card:hover { border-color: var(--moss); }
+.card .owner { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--muted); }
+
+.hero { display: grid; gap: 6px; }
+.kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; font-size: .92rem; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; }
+
+.field { display: grid; gap: 5px; }
+.field label { font-size: .82rem; font-weight: 600; color: var(--muted); }
+.field input, .field textarea, .field select { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 10px 12px; }
+.field textarea { min-height: 90px; resize: vertical; }
+.hint { font-size: .8rem; color: var(--muted); }
+.error { font-size: .85rem; color: var(--clay); font-weight: 600; }
+
+.comment { padding: 12px 16px; display: grid; gap: 4px; }
+.comment.reply { padding-left: 40px; }
+.comment + .comment { border-top: 1px solid var(--line); }
+.composer { display: flex; gap: 8px; padding: 12px 16px; align-items: flex-end; }
+.composer textarea { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 9px 12px; resize: none; min-height: 42px; }
+
+.chat { display: grid; gap: 8px; padding: 16px; }
+.bubble { max-width: 75%; padding: 8px 13px; border-radius: 16px; background: var(--sunken); justify-self: start; }
+.bubble.mine { background: var(--moss); color: var(--moss-ink); justify-self: end; }
+
+.history { display: grid; gap: 0; }
+.event { display: grid; grid-template-columns: 18px 1fr; gap: 10px; padding: 10px 16px; }
+.event .dot { width: 10px; height: 10px; border-radius: 999px; background: var(--moss); margin-top: 6px; }
+.event.declined .dot { background: var(--clay); }
+
+.map-wrap { padding: 12px; }
+.map { width: 100%; max-width: 520px; display: block; margin: 0 auto; aspect-ratio: 1; }
+.radius { display: flex; align-items: center; gap: 12px; }
+.radius input { flex: 1; accent-color: var(--moss); }
+.radius output { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 92px; }
+
+.sheet-backdrop { position: fixed; inset: 0; z-index: 50; background: rgba(20, 24, 17, .45); display: grid; place-items: center; padding: 16px; }
+.sheet { background: var(--surface); width: min(560px, 100%); max-height: calc(100% - 32px); overflow: auto; border-radius: 18px; box-shadow: var(--shadow); }
+.sheet-head { position: sticky; top: 0; background: var(--surface); display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--line); z-index: 1; }
+.sheet-head h2 { flex: 1; }
+.sheet-body { padding: 16px; display: grid; gap: 14px; }
+.pick { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; background: var(--bg); width: 100%; text-align: left; }
+.pick[aria-pressed="true"] { border-color: var(--moss); background: var(--soft-moss); }
+.check { flex: none; width: 22px; height: 22px; border-radius: 999px; border: 2px solid var(--line); display: grid; place-items: center; color: var(--moss-ink); }
+.pick[aria-pressed="true"] .check { background: var(--moss); border-color: var(--moss); }
+
+.welcome { min-height: 100%; display: grid; place-items: center; padding-inline: 16px; padding-block: 32px; }
+.welcome-card { width: min(420px, 100%); display: grid; gap: 22px; text-align: center; }
+.welcome-card h1 { font-size: 2.3rem; }
+.welcome-card .btns { display: grid; gap: 10px; }
+.toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 999px; z-index: 60; font-weight: 600; font-size: .9rem; max-width: calc(100% - 32px); }
+@media (prefers-reduced-motion: no-preference) {
+  .sheet { animation: rise .18s ease-out; }
+  @keyframes rise { from { transform: translateY(16px); opacity: .6; } }
+}
+</style>
+
+<div id="root"></div>
+
+<script>
+// ---------- Icons ----------
+const ICON = {
+  barter: '<path d="M7 7h11l-3-3M17 17H6l3 3"/>',
+  learn: '<path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2V5z"/><path d="M8 7h6"/>',
+  community: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',
+  people: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c2.8.1 5 2.5 5 5.3"/>',
+  inbox: '<path d="M3 13h5l1.5 3h5L16 13h5"/><path d="M5 5h14l2 8v6H3v-6z"/>',
+  calendar: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  tools: '<path d="M14.5 6.5a4 4 0 0 0-5.3 5.2L3.5 17.5l3 3 5.8-5.7a4 4 0 0 0 5.2-5.3l-2.6 2.6-2.4-.6-.6-2.4z"/>',
+  back: '<path d="M15 5l-7 7 7 7"/>',
+  close: '<path d="M6 6l12 12M18 6L6 18"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  chev: '<path d="M9 5l7 7-7 7"/>',
+  lock: '<rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
+  leaf: '<path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15"/><path d="M5 19c3-4 6-6 10-8"/>',
+  pin: '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  send: '<path d="M4 12l16-8-6 16-2.5-6.5z"/>',
+  veggies: '<path d="M14 10l-9.5 9.5c-.6.6-1.6-.3-1-1L13 9"/><path d="M13 9c1-3 4-4 6-3-1 2-2 5-5 6zM15 4c1 1 1 3 0 4M20 9c-1-1-3-1-4 0"/>',
+  fruit: '<path d="M12 7c-4-2-8 1-7 6 1 5 4 8 7 7 3 1 6-2 7-7 1-5-3-8-7-6z"/><path d="M12 7c0-2 1-3 3-4"/>',
+  meat: '<path d="M15 4c3 0 6 3 5 7-1 5-7 9-12 8-3 0-4-3-3-5 1-3 4-3 5-5s2-5 5-5z"/><circle cx="15" cy="9" r="1.6"/>',
+  dairy: '<path d="M9 3h6v3l2 3v12H7V9l2-3z"/><path d="M7 12h10"/>',
+  eggs: '<path d="M12 3c-3.5 0-6.5 5.2-6.5 10a6.5 6.5 0 0 0 13 0C18.5 8.2 15.5 3 12 3z"/>',
+  wood: '<circle cx="8" cy="15" r="4.5"/><circle cx="8" cy="15" r="1.6"/><path d="M8 10.5h10.5a4.5 4.5 0 0 1 0 9H8"/>',
+  timeSkill: '<path d="M14 4l6 6-3 1-5 5-3-3 5-5z"/><path d="M9 13l-5.5 5.5 2 2L11 15"/>',
+  other: '<path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/>',
+};
+const icon = (name, size = 20) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[name] || ''}</svg>`;
+
+// ---------- Data ----------
+const CATEGORIES = { veggies: 'Veggies', fruit: 'Fruit', meat: 'Meat', dairy: 'Dairy', eggs: 'Eggs', wood: 'Wood', timeSkill: 'Time + Skill', other: 'Other' };
+const ROLES = { practitioner: 'Practitioner', farmer: 'Farmer', both: 'Farmer & Practitioner' };
+const TOPICS = ['Growing', 'Preserving', 'Animals', 'Crafts', 'Building', 'Other'];
+const ACTIONS = { started: 'started a trade', asked: 'made an ask', countered: 'proposed something new', accepted: 'accepted', declined: 'declined' };
+const STORE_KEY = 'cottage-connect-demo-v1';
+
+const uid = () => Math.random().toString(36).slice(2, 10);
+const hoursAgo = h => Date.now() - h * 3600e3;
+
+function seed() {
+  const m = (id, name, role, region, bio, products, skills, lat, lon, extra = {}) =>
+    ({ id, name, role, region, bio, products, skills, lat, lon, status: 'approved', isAdmin: false, invitedBy: null, signIn: 'Apple', ...extra });
+  const members = [
+    m('rosa', 'Rosa Alvarez', 'practitioner', 'Hudson Valley, NY', 'Small-batch cheeses and ferments. Always happy to teach.', ['Cheese', 'Sauerkraut', 'Kimchi'], ['Cheesemaking', 'Fermentation'], 41.93, -73.91, { isAdmin: true }),
+    m('eli', 'Eli Turner', 'farmer', 'Hudson Valley, NY', '40 acres with Icelandic sheep and a big hay field.', ['Lamb', 'Fleece', 'Hay'], ['Fencing', 'Shearing'], 42.10, -73.80, { invitedBy: 'rosa' }),
+    m('june', 'June Park', 'both', 'Berkshires, MA', 'Bees, hens, and a market garden. Looking for land to expand hives.', ['Honey', 'Eggs', 'Greens', 'Candles'], ['Beekeeping', 'Candle making'], 42.30, -73.25, { invitedBy: 'rosa', signIn: 'Google' }),
+    m('sam', 'Sam Okafor', 'practitioner', 'Catskills, NY', 'Woodworker. Builds coops, sheds and raised beds.', ['Firewood', 'Cedar offcuts'], ['Woodworking', 'Timber framing'], 42.08, -74.30, { invitedBy: 'eli', signIn: 'Phone' }),
+    m('maya', 'Maya Chen', 'farmer', 'Litchfield, CT', 'Goat dairy, just getting started.', ['Goat milk'], ['Milking'], 41.75, -73.19, { status: 'pending', invitedBy: 'june', signIn: 'Phone' }),
+  ];
+  const it = (id, owner, title, category, quantity, details, h) => ({ id, owner, title, category, quantity, details, available: true, created: hoursAgo(h) });
+  const items = [
+    it('cheddar', 'rosa', 'Aged cheddar', 'dairy', '1 lb wheel', 'Six months aged, cloth bound.', 20),
+    it('kraut', 'rosa', 'Sauerkraut', 'veggies', '2 quarts', '', 30),
+    it('cheeseclass', 'rosa', 'Cheesemaking lesson', 'timeSkill', '2 hours', 'At my kitchen or yours. Fresh mozzarella or chèvre.', 40),
+    it('lamb', 'eli', 'Lamb, half share', 'meat', 'About 20 lbs', 'Pasture raised, butchered in November.', 10),
+    it('fleece', 'eli', 'Raw fleece', 'other', '12 lbs, skirted', '', 50),
+    it('fencing', 'eli', 'Fence repair help', 'timeSkill', 'Half a day', '', 60),
+    it('eggs', 'june', 'Pastured eggs', 'eggs', '2 dozen a week', '', 5),
+    it('honey', 'june', 'Wildflower honey', 'other', '1 quart jars', '', 15),
+    it('greens', 'june', 'Fall greens box', 'veggies', 'Weekly through November', 'Kale, chard, lettuce, and whatever else is thriving.', 25),
+    it('firewood', 'sam', 'Seasoned firewood', 'wood', '1/2 cord', 'Oak and maple, split and dry. Can deliver locally.', 8),
+    it('raisedbed', 'sam', 'Build a raised bed', 'timeSkill', 'One 4x8 bed', 'You supply lumber or I use my cedar offcuts.', 35),
+  ];
+  return {
+    members, items,
+    trades: [
+      { id: 't1', item: 'lamb', requester: 'june', owner: 'eli', status: 'awaitingRequester', offered: ['honey', 'eggs'], updated: hoursAgo(3) },
+      { id: 't2', item: 'cheddar', requester: 'sam', owner: 'rosa', status: 'awaitingOwner', offered: [], updated: hoursAgo(1) },
+    ],
+    events: [
+      { trade: 't1', actor: 'june', action: 'started', items: [], note: 'Would love a half share for the winter!', at: hoursAgo(6) },
+      { trade: 't1', actor: 'eli', action: 'asked', items: ['honey', 'eggs'], note: 'Honey and eggs through the winter?', at: hoursAgo(3) },
+      { trade: 't2', actor: 'sam', action: 'started', items: [], note: "That cheddar looks amazing. Take a look at what I've got.", at: hoursAgo(1) },
+    ],
+    guides: [
+      { id: 'g1', author: 'rosa', title: 'Starting a sauerkraut crock', topic: 'Preserving', body: 'Shred 5 lbs of cabbage and mix in 3 tbsp of salt. Massage until it releases liquid, then pack tightly into a crock so the brine covers it. Weigh it down, cover with a cloth, and taste after a week. Keep it cool, around 65°F, for the best texture.', at: hoursAgo(120) },
+      { id: 'g2', author: 'eli', title: 'Lambing season checklist', topic: 'Animals', body: "Clean jugs with fresh bedding, iodine for navels, colostrum on hand, a heat lamp with a safe mount, and the vet's number on the barn door. Check ewes every few hours once bags fill.", at: hoursAgo(150) },
+      { id: 'g3', author: 'june', title: 'Overwintering bees in the Northeast', topic: 'Animals', body: 'Leave at least 60 lbs of honey per hive. Add a moisture quilt, reduce entrances, and wrap hives on the windward side. Heft from behind in January to check stores.', at: hoursAgo(80) },
+      { id: 'g4', author: 'sam', title: 'Splitting and seasoning firewood', topic: 'Building', body: 'Split green, stack bark-up in single rows off the ground, and cover only the top. Oak needs a full year; maple and ash are ready in six to nine months.', at: hoursAgo(60) },
+    ],
+    posts: [
+      { id: 'p1', author: 'june', title: 'Seed swap at the grange, Oct 20', body: 'Bring saved seeds, labeled with variety and year. Coffee and pie provided.', at: hoursAgo(30) },
+      { id: 'p2', author: 'eli', title: 'Anyone have a cider press to borrow?', body: 'Apples are coming in fast this year. Happy to share a few gallons back.', at: hoursAgo(12) },
+    ],
+    comments: [
+      { id: 'c1', post: 'p1', author: 'sam', replyTo: null, text: 'Is there a table for tools too?', at: hoursAgo(28) },
+      { id: 'c2', post: 'p1', author: 'june', replyTo: 'sam', text: 'Yes, bring them along!', at: hoursAgo(27) },
+      { id: 'c3', post: 'p2', author: 'rosa', replyTo: null, text: "My neighbor has one. I'll ask!", at: hoursAgo(10) },
+    ],
+    requests: [
+      { from: 'rosa', to: 'june', at: hoursAgo(90) }, { from: 'june', to: 'rosa', at: hoursAgo(89) },
+      { from: 'eli', to: 'rosa', at: hoursAgo(2) },
+    ],
+    messages: [
+      { from: 'june', to: 'rosa', text: 'Do you still have rennet to spare?', at: hoursAgo(48) },
+      { from: 'rosa', to: 'june', text: 'Yes! Swing by Saturday.', at: hoursAgo(47) },
+    ],
+    invites: [
+      { code: 'GOAT42', by: 'june', usedBy: 'maya', at: hoursAgo(5) },
+      { code: 'HARVEST', by: 'rosa', usedBy: null, at: hoursAgo(1) },
+    ],
+  };
+}
+
+let db;
+try { db = JSON.parse(localStorage.getItem(STORE_KEY)) || seed(); } catch { db = seed(); }
+let session;
+try { session = JSON.parse(localStorage.getItem(STORE_KEY + ':session')) || { userId: null }; } catch { session = { userId: null }; }
+function persist() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(db)); localStorage.setItem(STORE_KEY + ':session', JSON.stringify(session)); } catch {}
+}
+
+// UI state (not persisted)
+const ui = { tab: 'barter', stack: [], sheet: null, category: null, search: '', topic: null, peopleView: 'list', roleFilter: null, radius: 50, toast: null };
+
+// ---------- Helpers ----------
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const member = id => db.members.find(m => m.id === id);
+const nameOf = id => member(id)?.name || 'Someone';
+const first = id => nameOf(id).split(' ')[0];
+const item = id => db.items.find(i => i.id === id);
+const me = () => (session.userId ? member(session.userId) : null);
+const area = m => (m.region.split(',').pop() || '').trim();
+const parseList = s => s.split(',').map(x => x.trim()).filter(Boolean);
+
+function miles(a, b) {
+  const r = 3958.8, rad = Math.PI / 180;
+  const dLat = (b.lat - a.lat) * rad, dLon = (b.lon - a.lon) * rad;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLon / 2) ** 2;
+  const d = r * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+  return Math.max(5, Math.round(d / 5) * 5); // rounded to 5 mi so exact locations stay private
+}
+const snap = v => Math.round(v * 20) / 20;
+
+function ago(t) {
+  const s = (Date.now() - t) / 1000;
+  if (s < 60) return 'just now';
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
+}
+
+const AV_COLORS = ['#4d6a35', '#a85a33', '#b08a2e', '#6b5a43', '#3f7a73'];
+function avatar(id, size = 36) {
+  const n = nameOf(id);
+  const color = AV_COLORS[[...n].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_COLORS.length];
+  const initials = n.split(' ').slice(0, 2).map(w => w[0]).join('');
+  return `<span class="avatar" style="width:${size}px;height:${size}px;background:${color};font-size:${size * 0.38}px">${esc(initials)}</span>`;
+}
+
+// Connections: two members are connected once each has requested the other.
+function connState(a, b) {
+  const sent = db.requests.some(r => r.from === a && r.to === b);
+  const got = db.requests.some(r => r.from === b && r.to === a);
+  return sent && got ? 'connected' : sent ? 'requested' : got ? 'incoming' : 'none';
+}
+const incomingRequests = id => [...new Set(db.requests.filter(r => r.to === id).map(r => r.from))].filter(o => connState(id, o) === 'incoming');
+const connections = id => [...new Set(db.requests.filter(r => r.to === id).map(r => r.from))].filter(o => connState(id, o) === 'connected');
+
+// Comments: one per post until the poster replies to you.
+function canComment(post, userId) {
+  if (post.author === userId) return true;
+  const onPost = db.comments.filter(c => c.post === post.id);
+  const mine = onPost.filter(c => c.author === userId).map(c => c.at);
+  if (!mine.length) return true;
+  const last = Math.max(...mine);
+  return onPost.some(c => c.author === post.author && c.replyTo === userId && c.at > last);
+}
+
+// Trades
+const waitingOn = t => t.status === 'awaitingOwner' ? t.owner : t.status === 'awaitingRequester' ? t.requester : null;
+const isOpen = t => t.status === 'awaitingOwner' || t.status === 'awaitingRequester';
+function inboxCount() {
+  const u = me(); if (!u) return 0;
+  return db.trades.filter(t => waitingOn(t) === u.id).length + incomingRequests(u.id).length
+    + (u.isAdmin ? db.members.filter(m => m.status === 'pending').length : 0);
+}
+
+// ---------- Actions ----------
+function toast(msg) { ui.toast = msg; render(); setTimeout(() => { if (ui.toast === msg) { ui.toast = null; render(); } }, 2200); }
+function go(view) { ui.stack.push(view); render(); window.scrollTo(0, 0); }
+function back() { ui.stack.pop(); render(); }
+function setTab(t) { ui.tab = t; ui.stack = []; render(); window.scrollTo(0, 0); }
+function openSheet(s) { ui.sheet = s; render(); setTimeout(() => document.querySelector('.sheet [autofocus]')?.focus(), 30); }
+function closeSheet() { ui.sheet = null; render(); }
+const val = id => (document.getElementById(id)?.value || '').trim();
+
+const actions = {
+  tab: el => setTab(el.dataset.v),
+  back: () => back(),
+  open: el => go({ type: el.dataset.type, id: el.dataset.id }),
+  sheet: el => openSheet({ type: el.dataset.v, id: el.dataset.id }),
+  close: () => closeSheet(),
+  category: el => { ui.category = el.dataset.v || null; render(); },
+  topic: el => { ui.topic = el.dataset.v || null; render(); },
+  peopleView: el => { ui.peopleView = el.dataset.v; render(); },
+  role: el => { ui.roleFilter = el.dataset.v || null; render(); },
+
+  signInAs: el => { session.userId = el.dataset.id; ui.sheet = null; ui.tab = 'barter'; ui.stack = []; persist(); render(); },
+  signOut: () => { session.userId = null; ui.sheet = null; ui.stack = []; persist(); render(); },
+  switchTo: el => { session.userId = el.dataset.id; ui.stack = []; persist(); ui.sheet = null; toast(`Now using the app as ${first(el.dataset.id)}`); },
+  resetDemo: () => { db = seed(); session.userId = null; ui.sheet = null; ui.stack = []; persist(); render(); },
+
+  checkCode: () => {
+    const code = val('join-code').toUpperCase();
+    const inv = db.invites.find(i => i.code === code && !i.usedBy);
+    ui.sheet = { ...ui.sheet, invite: inv?.code || null, codeError: !inv, method: ui.sheet.method || 'Apple' };
+    render();
+  },
+  joinMethod: el => { ui.sheet.method = el.dataset.v; render(); },
+  join: () => {
+    const name = val('join-name'), region = val('join-region');
+    if (!name || !region) { ui.sheet.formError = 'Add your name and town to continue.'; render(); return; }
+    const inv = db.invites.find(i => i.code === ui.sheet.invite);
+    const m = { id: uid(), name, role: val('join-role'), region, bio: val('join-bio'), products: parseList(val('join-products')), skills: parseList(val('join-skills')),
+      lat: 42 + (Math.random() - .5) * .6, lon: -73.8 + (Math.random() - .5) * .6, status: 'pending', isAdmin: false, invitedBy: inv.by, signIn: ui.sheet.method };
+    db.members.push(m); inv.usedBy = m.id; session.userId = m.id; ui.sheet = null; persist(); render();
+  },
+  approve: el => { member(el.dataset.id).status = 'approved'; persist(); toast(`${first(el.dataset.id)} is approved`); },
+  declineMember: el => { member(el.dataset.id).status = 'declined'; persist(); render(); },
+
+  addItem: () => {
+    const title = val('item-title');
+    if (!title) { ui.sheet.formError = 'Give the item a name.'; render(); return; }
+    db.items.unshift({ id: uid(), owner: me().id, title, category: val('item-cat'), quantity: val('item-qty'), details: val('item-details'), available: true, created: Date.now() });
+    persist(); closeSheet(); toast('Added to your spare items');
+  },
+  toggleAvailable: el => { const i = item(el.dataset.id); i.available = !i.available; persist(); render(); },
+  removeItem: el => { db.items = db.items.filter(i => i.id !== el.dataset.id); ui.stack.pop(); persist(); toast('Listing removed'); },
+
+  startTrade: el => {
+    const i = item(el.dataset.id), t = { id: uid(), item: i.id, requester: me().id, owner: i.owner, status: 'awaitingOwner', offered: [], updated: Date.now() };
+    db.trades.unshift(t);
+    db.events.push({ trade: t.id, actor: me().id, action: 'started', items: [], note: val('trade-note'), at: Date.now() });
+    persist(); ui.sheet = null; ui.stack.push({ type: 'trade', id: t.id }); toast(`${first(i.owner)} has been notified`);
+  },
+  togglePick: el => { const s = ui.sheet.selected; s.has(el.dataset.id) ? s.delete(el.dataset.id) : s.add(el.dataset.id); render(); },
+  propose: () => {
+    const t = db.trades.find(x => x.id === ui.sheet.id), u = me(), ids = [...ui.sheet.selected], note = val('pick-note');
+    if (!ids.length && !note) { ui.sheet.formError = 'Pick at least one item or add a note.'; render(); return; }
+    const firstAsk = t.status === 'awaitingOwner' && !t.offered.length && u.id === t.owner;
+    t.offered = ids; t.status = u.id === t.owner ? 'awaitingRequester' : 'awaitingOwner'; t.updated = Date.now();
+    db.events.push({ trade: t.id, actor: u.id, action: firstAsk ? 'asked' : 'countered', items: ids, note, at: Date.now() });
+    persist(); ui.sheet = null; toast(`Sent to ${first(t.owner === u.id ? t.requester : t.owner)}`);
+  },
+  acceptTrade: el => {
+    const t = db.trades.find(x => x.id === el.dataset.id);
+    t.status = 'accepted'; t.updated = Date.now();
+    [t.item, ...t.offered].forEach(id => { const i = item(id); if (i) i.available = false; });
+    db.events.push({ trade: t.id, actor: me().id, action: 'accepted', items: [], note: '', at: Date.now() });
+    persist(); toast('Trade agreed');
+  },
+  confirmDecline: el => { ui.confirmDecline = el.dataset.id; render(); },
+  cancelDecline: () => { ui.confirmDecline = null; render(); },
+  declineTrade: el => {
+    const t = db.trades.find(x => x.id === el.dataset.id);
+    t.status = 'declined'; t.updated = Date.now(); ui.confirmDecline = null;
+    db.events.push({ trade: t.id, actor: me().id, action: 'declined', items: [], note: '', at: Date.now() });
+    persist(); render();
+  },
+
+  connect: el => { db.requests.push({ from: me().id, to: el.dataset.id, at: Date.now() }); persist();
+    toast(connState(me().id, el.dataset.id) === 'connected' ? `You and ${first(el.dataset.id)} are connected` : 'Request sent'); },
+  sendMessage: el => {
+    const text = val('chat-input'); if (!text) return;
+    db.messages.push({ from: me().id, to: el.dataset.id, text, at: Date.now() }); persist(); render();
+    document.getElementById('chat-input')?.focus();
+  },
+
+  addGuide: () => {
+    const title = val('guide-title'), body = val('guide-body');
+    if (!title || !body) { ui.sheet.formError = 'Add a title and what you know.'; render(); return; }
+    db.guides.unshift({ id: uid(), author: me().id, title, topic: val('guide-topic'), body, at: Date.now() }); persist(); closeSheet(); toast('Guide published');
+  },
+  addPost: () => {
+    const title = val('post-title'), body = val('post-body');
+    if (!title || !body) { ui.sheet.formError = 'Add a title and a message.'; render(); return; }
+    db.posts.unshift({ id: uid(), author: me().id, title, body, at: Date.now() }); persist(); closeSheet(); toast('Posted');
+  },
+  replyTo: el => { ui.replyTo = el.dataset.id; render(); document.getElementById('comment-input')?.focus(); },
+  cancelReply: () => { ui.replyTo = null; render(); },
+  addComment: el => {
+    const text = val('comment-input'); if (!text) return;
+    const post = db.posts.find(p => p.id === el.dataset.id);
+    db.comments.push({ id: uid(), post: post.id, author: me().id, replyTo: post.author === me().id ? ui.replyTo || null : null, text, at: Date.now() });
+    ui.replyTo = null; persist(); render();
+  },
+  createInvite: () => { const code = Array.from({ length: 6 }, () => 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'[Math.floor(Math.random() * 31)]).join('');
+    db.invites.unshift({ code, by: me().id, usedBy: null, at: Date.now() }); persist(); render(); },
+  copyInvite: el => {
+    const text = `Join me on Cottage Connect! Use invite code ${el.dataset.v}.`;
+    navigator.clipboard?.writeText(text).then(() => toast('Invite copied'), () => toast(`Code: ${el.dataset.v}`)) ?? toast(`Code: ${el.dataset.v}`);
+  },
+  saveProfile: () => {
+    const u = me(); u.name = val('pf-name') || u.name; u.role = val('pf-role'); u.region = val('pf-region'); u.bio = val('pf-bio');
+    u.products = parseList(val('pf-products')); u.skills = parseList(val('pf-skills')); persist(); closeSheet(); toast('Profile saved');
+  },
+};
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-action]');
+  if (el && !el.disabled) { e.preventDefault(); actions[el.dataset.action]?.(el); return; }
+  if (e.target.classList.contains('sheet-backdrop')) closeSheet();
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'search') { ui.search = e.target.value; renderKeepFocus('search'); }
+  if (e.target.id === 'radius') { ui.radius = +e.target.value; renderKeepFocus('radius'); }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && ui.sheet) closeSheet();
+  if (e.key === 'Enter' && !e.shiftKey && e.target.id === 'chat-input') { e.preventDefault(); document.querySelector('[data-action="sendMessage"]')?.click(); }
+});
+function renderKeepFocus(id) {
+  const el = document.getElementById(id), pos = el?.selectionStart;
+  render();
+  const n = document.getElementById(id); if (n) { n.focus(); if (pos != null && n.setSelectionRange && n.type !== 'range') n.setSelectionRange(pos, pos); }
+}
+
+// ---------- Components ----------
+const catIcon = c => `<span class="cat">${icon(c, 22)}</span>`;
+function itemRow(i, showOwner = true) {
+  const u = me(), owner = member(i.owner);
+  const meta = [i.quantity, showOwner && owner ? owner.name : '', showOwner && owner && u && owner.id !== u.id ? `~${miles(u, owner)} mi` : ''].filter(Boolean).join(' · ');
+  return `<button class="row" data-action="open" data-type="item" data-id="${i.id}">${catIcon(i.category)}
+    <span class="grow"><span class="title">${esc(i.title)}</span><br><span class="sub">${esc(meta)}</span></span>
+    ${i.available ? '' : '<span class="tag grey">Traded</span>'}<span class="chev">${icon('chev', 16)}</span></button>`;
+}
+function memberRow(m) {
+  const u = me();
+  return `<button class="row" data-action="open" data-type="member" data-id="${m.id}">${avatar(m.id)}
+    <span class="grow"><span class="title">${esc(m.name)}</span><br><span class="sub">${esc(m.products.join(' · '))}</span></span>
+    <span style="display:grid;justify-items:end;gap:2px"><span class="tag">${ROLES[m.role]}</span>${u ? `<span class="tiny">~${miles(u, m)} mi</span>` : ''}</span></button>`;
+}
+function tradeRow(t) {
+  const u = me(), other = t.owner === u.id ? t.requester : t.owner, i = item(t.item);
+  let line;
+  if (t.status === 'accepted') line = `Agreed with ${nameOf(other)}`;
+  else if (t.status === 'declined') line = 'Declined';
+  else if (waitingOn(t) === u.id) line = t.offered.length ? `${first(other)} made an offer` : `${first(other)} wants this. Choose what's fair.`;
+  else line = `Waiting on ${first(other)}`;
+  return `<button class="row" data-action="open" data-type="trade" data-id="${t.id}"><span class="cat" style="background:var(--soft-clay);color:var(--clay)">${icon('barter', 22)}</span>
+    <span class="grow"><span class="title">${esc(i?.title || 'Item')}</span><br><span class="sub">${esc(line)}</span></span><span class="tiny">${ago(t.updated)}</span></button>`;
+}
+const panel = (head, body) => `<section class="panel">${head ? `<div class="panel-head">${head}</div>` : ''}${body}</section>`;
+const emptyRow = text => `<div class="empty">${text}</div>`;
+
+// ---------- Screens ----------
+function barterScreen() {
+  const u = me(), q = ui.search.toLowerCase();
+  const list = db.items.filter(i => i.available && i.owner !== u.id && member(i.owner)?.status === 'approved'
+    && (!ui.category || i.category === ui.category) && (!q || (i.title + ' ' + i.details).toLowerCase().includes(q)));
+  return { title: 'Barter', wide: true, body: `
+    <div class="note">${icon('barter')}<span>Barter only. Trade what you grow, make, or know. No money changes hands.</span></div>
+    <div class="toolbar"><input id="search" class="search" type="search" placeholder="Eggs, firewood, fencing…" value="${esc(ui.search)}" aria-label="Search items">
+      <button class="btn" data-action="sheet" data-v="addItem">${icon('plus', 16)} List a spare item</button></div>
+    <div class="chips" role="group" aria-label="Category">
+      <button class="chip" data-action="category" data-v="" aria-pressed="${!ui.category}">All</button>
+      ${Object.entries(CATEGORIES).map(([k, v]) => `<button class="chip" data-action="category" data-v="${k}" aria-pressed="${ui.category === k}">${v}</button>`).join('')}
+    </div>
+    ${list.length ? `<div class="item-grid">${list.map(i => { const o = member(i.owner); return `
+      <button class="card" data-action="open" data-type="item" data-id="${i.id}">
+        <div style="display:flex;justify-content:space-between;align-items:center">${catIcon(i.category)}<span class="tag clay">${CATEGORIES[i.category]}</span></div>
+        <div><h3>${esc(i.title)}</h3><div class="sub">${esc(i.quantity)}</div></div>
+        <div class="owner">${avatar(o.id, 24)}<span>${esc(o.name)} · ~${miles(u, o)} mi</span></div>
+      </button>`; }).join('')}</div>` : panel('', emptyRow('Nothing matches. Try another category, or list something of your own.'))}` };
+}
+
+function itemScreen(id) {
+  const i = item(id); if (!i) return { title: 'Item', body: panel('', emptyRow('This listing was removed.')) };
+  const u = me(), o = member(i.owner), mine = i.owner === u.id;
+  const open = db.trades.find(t => t.item === i.id && t.requester === u.id && isOpen(t));
+  let cta;
+  if (mine) cta = `<div class="pad"><div class="toolbar"><button class="btn" data-action="toggleAvailable" data-id="${i.id}">${i.available ? 'Mark as not available' : 'Mark as available'}</button>
+      <button class="btn danger" data-action="removeItem" data-id="${i.id}">Remove listing</button></div></div>`;
+  else if (open) cta = `<div class="pad"><button class="btn primary block" data-action="open" data-type="trade" data-id="${open.id}">${icon('barter', 18)} View your trade</button></div>`;
+  else if (i.available) cta = `<div class="pad"><button class="btn primary block" data-action="sheet" data-v="startTrade" data-id="${i.id}">${icon('barter', 18)} Start a Trade</button></div>`;
+  else cta = emptyRow('This item has already been traded.');
+  return { title: i.title, back: true, body: `
+    <section class="panel"><div class="pad">
+      <div style="display:flex;gap:12px;align-items:center">${catIcon(i.category)}<div><span class="tag clay">${CATEGORIES[i.category]}</span></div></div>
+      <div class="hero"><h1>${esc(i.title)}</h1>${i.quantity ? `<div class="sub">${esc(i.quantity)}</div>` : ''}</div>
+      ${i.details ? `<p>${esc(i.details)}</p>` : ''}
+    </div>${cta}</section>
+    ${mine ? '' : panel('Offered by', `<button class="row" data-action="open" data-type="member" data-id="${o.id}">${avatar(o.id, 40)}<span class="grow"><span class="title">${esc(o.name)}</span><br>
+      <span class="sub">${esc(area(o))} · ~${miles(u, o)} mi away</span></span><span class="chev">${icon('chev', 16)}</span></button>`)}` };
+}
+
+function tradeScreen(id) {
+  const t = db.trades.find(x => x.id === id), u = me(), i = item(t.item);
+  const myTurn = waitingOn(t) === u.id, firstAsk = t.status === 'awaitingOwner' && !t.offered.length;
+  const headline = u.id === t.requester ? `You asked for ${i?.title}` : u.id === t.owner ? `${first(t.requester)} wants your ${i?.title}` : `${first(t.requester)} and ${first(t.owner)}`;
+  const status = t.status === 'accepted' ? '<span class="tag">Agreed</span>' : t.status === 'declined' ? '<span class="tag grey">Declined</span>'
+    : `<span class="tag clay">${myTurn ? 'Your turn' : 'Waiting'}</span>`;
+  const offered = t.offered.map(item).filter(Boolean);
+  let act = '';
+  if (isOpen(t)) {
+    if (!myTurn) act = `<div class="pad"><div class="sub" style="display:flex;gap:8px;align-items:center">${icon('clock', 18)} Waiting on ${esc(nameOf(waitingOn(t)))}</div></div>`;
+    else if (ui.confirmDecline === t.id) act = `<div class="pad"><p>Decline this trade? ${esc(first(u.id === t.owner ? t.requester : t.owner))} will see that it's closed.</p>
+      <div class="toolbar"><button class="btn danger" data-action="declineTrade" data-id="${t.id}">Decline</button><button class="btn" data-action="cancelDecline">Keep it open</button></div></div>`;
+    else if (firstAsk) act = `<div class="pad"><button class="btn primary block" data-action="sheet" data-v="picker" data-id="${t.id}">${icon('check', 18)} Choose What Seems Fair</button>
+      <button class="btn danger" data-action="confirmDecline" data-id="${t.id}">Decline</button></div>`;
+    else act = `<div class="pad"><button class="btn primary block" data-action="acceptTrade" data-id="${t.id}">${icon('check', 18)} Accept</button>
+      <div class="toolbar"><button class="btn" data-action="sheet" data-v="picker" data-id="${t.id}">Propose something new</button>
+      <button class="btn danger" data-action="confirmDecline" data-id="${t.id}">Decline</button></div></div>`;
+  } else if (t.status === 'accepted') {
+    const other = u.id === t.owner ? t.requester : t.owner;
+    act = `<div class="pad"><div class="note">${icon('check')}<span>Trade agreed. Connect with each other to message and arrange the swap.</span></div>
+      <button class="linkbtn" data-action="open" data-type="member" data-id="${other}">View ${esc(first(other))}'s profile</button></div>`;
+  }
+  const events = db.events.filter(e => e.trade === t.id).sort((a, b) => a.at - b.at);
+  return { title: 'Trade', back: true, body: `
+    <section class="panel"><div class="pad"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><h2>${esc(headline)}</h2>${status}</div></div>
+      ${i ? itemRow(i) : ''}</section>
+    ${panel(offered.length ? `${esc(first(t.requester))} would give` : 'In exchange', offered.length ? offered.map(x => itemRow(x, false)).join('')
+      : emptyRow(firstAsk ? `Waiting for ${esc(first(t.owner))} to choose from ${esc(first(t.requester))}'s spare items.` : 'Nothing selected yet.'))}
+    ${act ? `<section class="panel">${act}</section>` : ''}
+    ${panel('History', `<div class="history">${events.map(e => `<div class="event ${e.action}"><span class="dot"></span><div>
+      <div><strong>${esc(nameOf(e.actor))}</strong> ${ACTIONS[e.action]} <span class="tiny">· ${ago(e.at)}</span></div>
+      ${e.items.length ? `<div class="sub">${esc(e.items.map(x => item(x)?.title).filter(Boolean).join(', '))}</div>` : ''}
+      ${e.note ? `<div class="sub"><em>“${esc(e.note)}”</em></div>` : ''}</div></div>`).join('')}</div>`)}` };
+}
+
+function learnScreen() {
+  const q = ui.search.toLowerCase();
+  const list = db.guides.filter(g => (!ui.topic || g.topic === ui.topic) && (!q || (g.title + ' ' + g.body).toLowerCase().includes(q)));
+  return { title: 'Learn', body: `
+    <div class="toolbar"><input id="search" class="search" type="search" placeholder="Search guides" value="${esc(ui.search)}" aria-label="Search guides">
+      <button class="btn" data-action="sheet" data-v="addGuide">${icon('plus', 16)} Share know-how</button></div>
+    <div class="chips"><button class="chip" data-action="topic" data-v="" aria-pressed="${!ui.topic}">All topics</button>
+      ${TOPICS.map(t => `<button class="chip" data-action="topic" data-v="${t}" aria-pressed="${ui.topic === t}">${t}</button>`).join('')}</div>
+    ${panel('', list.length ? list.map(g => `<button class="row" data-action="open" data-type="guide" data-id="${g.id}">
+      <span class="grow"><span style="display:flex;gap:8px;align-items:center;justify-content:space-between"><span class="title">${esc(g.title)}</span><span class="tag clay">${g.topic}</span></span>
+      <span class="sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(g.body)}</span><span class="tiny">by ${esc(nameOf(g.author))}</span></span></button>`).join('')
+      : emptyRow('No guides match yet. Share what you know.'))}` };
+}
+
+function guideScreen(id) {
+  const g = db.guides.find(x => x.id === id);
+  return { title: 'Guide', back: true, body: `<article class="panel"><div class="pad" style="gap:14px">
+    <span><span class="tag clay">${g.topic}</span></span><h1>${esc(g.title)}</h1>
+    <button class="row" style="padding:0" data-action="open" data-type="member" data-id="${g.author}">${avatar(g.author, 28)}<span class="grow"><strong>${esc(nameOf(g.author))}</strong> <span class="tiny">${ago(g.at)}</span></span></button>
+    <p style="max-width:65ch;line-height:1.7">${esc(g.body)}</p></div></article>` };
+}
+
+function communityScreen() {
+  return { title: 'Community', body: `
+    <div class="toolbar"><span class="sub" style="flex:1">Questions, advice, and events from members.</span><button class="btn" data-action="sheet" data-v="addPost">${icon('plus', 16)} New post</button></div>
+    ${panel('', db.posts.map(p => { const n = db.comments.filter(c => c.post === p.id).length; return `
+      <button class="row" data-action="open" data-type="post" data-id="${p.id}">${avatar(p.author)}<span class="grow"><span class="title">${esc(p.title)}</span><br>
+      <span class="sub">${esc(nameOf(p.author))} · ${ago(p.at)} · ${n} comment${n === 1 ? '' : 's'}</span></span><span class="chev">${icon('chev', 16)}</span></button>`; }).join('') || emptyRow('Nothing here yet.'))}` };
+}
+
+function postScreen(id) {
+  const p = db.posts.find(x => x.id === id), u = me(), poster = p.author === u.id;
+  const comments = db.comments.filter(c => c.post === p.id).sort((a, b) => a.at - b.at);
+  const allowed = canComment(p, u.id);
+  const composer = allowed ? `
+    ${ui.replyTo && poster ? `<div class="pad" style="padding-bottom:0"><div class="tiny">Replying to ${esc(nameOf(ui.replyTo))} · <button class="linkbtn" data-action="cancelReply">Cancel</button></div></div>` : ''}
+    <div class="composer"><textarea id="comment-input" rows="1" placeholder="${poster ? 'Reply to your post' : 'Add your comment'}" aria-label="Comment"></textarea>
+      <button class="btn primary" data-action="addComment" data-id="${p.id}">Send</button></div>
+    ${poster ? '' : '<div class="pad" style="padding-top:0"><span class="hint">Each member gets one comment per post until the poster replies to them.</span></div>'}`
+    : `<div class="pad"><div class="note clay">${icon('lock')}<span>You've left your comment. You can comment again once ${esc(first(p.author))} replies to you.</span></div></div>`;
+  return { title: 'Post', back: true, body: `
+    <section class="panel"><div class="pad"><h2>${esc(p.title)}</h2>
+      <div style="display:flex;gap:8px;align-items:center">${avatar(p.author, 26)}<strong>${esc(nameOf(p.author))}</strong><span class="tiny">${ago(p.at)}</span></div>
+      <p>${esc(p.body)}</p></div></section>
+    <section class="panel"><div class="panel-head">Comments</div>
+      ${comments.map(c => `<div class="comment ${c.replyTo ? 'reply' : ''}">
+        <div style="display:flex;gap:8px;align-items:center"><strong>${esc(nameOf(c.author))}</strong>${c.author === p.author ? '<span class="tag">Poster</span>' : ''}<span class="tiny" style="margin-left:auto">${ago(c.at)}</span></div>
+        ${c.replyTo ? `<div class="tiny">↪ replying to ${esc(nameOf(c.replyTo))}</div>` : ''}
+        <div>${esc(c.text)}</div>
+        ${poster && c.author !== u.id ? `<div><button class="linkbtn" data-action="replyTo" data-id="${c.author}">Reply</button></div>` : ''}</div>`).join('') || emptyRow('No comments yet.')}
+      ${composer}</section>` };
+}
+
+function peopleScreen() {
+  const u = me();
+  const list = db.members.filter(m => m.id !== u.id && m.status === 'approved' && (!ui.roleFilter || m.role === ui.roleFilter || m.role === 'both') && miles(u, m) <= ui.radius)
+    .sort((a, b) => miles(u, a) - miles(u, b));
+  const controls = `<section class="panel"><div class="pad">
+    <div class="toolbar"><div class="seg"><button data-action="peopleView" data-v="list" aria-pressed="${ui.peopleView === 'list'}">List</button><button data-action="peopleView" data-v="map" aria-pressed="${ui.peopleView === 'map'}">Map</button></div>
+      <div class="seg"><button data-action="role" data-v="" aria-pressed="${!ui.roleFilter}">Everyone</button><button data-action="role" data-v="farmer" aria-pressed="${ui.roleFilter === 'farmer'}">Farmers</button><button data-action="role" data-v="practitioner" aria-pressed="${ui.roleFilter === 'practitioner'}">Practitioners</button></div></div>
+    <div class="radius"><span style="color:var(--moss)">${icon('pin')}</span><output for="radius">Within ${ui.radius} mi</output><input id="radius" type="range" min="5" max="150" step="5" value="${ui.radius}" aria-label="Distance radius in miles"></div>
+  </div></section>`;
+  if (ui.peopleView === 'list') return { title: 'People', body: controls + panel('', list.map(memberRow).join('') || emptyRow(`No one within ${ui.radius} miles. Widen the radius to see more people.`)) };
+
+  // Map: plot snapped locations in miles from the viewer, scaled so the radius ring fills the frame.
+  const R = 150, C = 170, scale = R / ui.radius, lat0 = snap(u.lat), lon0 = snap(u.lon);
+  const pos = m => ({ x: C + (snap(m.lon) - lon0) * Math.cos(lat0 * Math.PI / 180) * 69 * scale, y: C - (snap(m.lat) - lat0) * 69 * scale });
+  const grid = Array.from({ length: 9 }, (_, k) => 10 + k * 40).map(v => `<line x1="${v}" y1="0" x2="${v}" y2="340" /><line x1="0" y1="${v}" x2="340" y2="${v}" />`).join('');
+  const pins = list.map(m => { const p = pos(m); const n = nameOf(m.id); const col = AV_COLORS[[...n].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_COLORS.length];
+    return `<g data-action="open" data-type="member" data-id="${m.id}" style="cursor:pointer" role="button" tabindex="0" aria-label="${esc(n)}">
+      <circle cx="${p.x}" cy="${p.y}" r="15" fill="${col}" stroke="var(--surface)" stroke-width="2"/>
+      <text x="${p.x}" y="${p.y + 4}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${esc(n.split(' ').map(w => w[0]).join(''))}</text>
+      <text x="${p.x}" y="${p.y + 30}" text-anchor="middle" font-size="10.5" fill="var(--fg)">${esc(n.split(' ')[0])} · ${miles(u, m)} mi</text></g>`; }).join('');
+  return { title: 'People', body: controls + `<section class="panel map-wrap">
+    <svg class="map" viewBox="0 0 340 340" role="img" aria-label="Map of members within ${ui.radius} miles">
+      <rect x="0" y="0" width="340" height="340" rx="12" fill="var(--sunken)"/>
+      <g stroke="var(--line)" stroke-width="1">${grid}</g>
+      <circle cx="${C}" cy="${C}" r="${R}" fill="var(--soft-moss)" fill-opacity=".7" stroke="var(--moss)" stroke-dasharray="4 4"/>
+      <text x="${C}" y="${C - R + 14}" text-anchor="middle" font-size="10" fill="var(--muted)">${ui.radius} mi</text>
+      <circle cx="${C}" cy="${C}" r="9" fill="var(--clay)" stroke="var(--surface)" stroke-width="2"/>
+      <text x="${C}" y="${C + 22}" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--fg)">You</text>
+      ${pins}
+    </svg>
+    <p class="tiny" style="text-align:center;padding-top:8px">Locations are approximate (about 3 miles) so no one's home is shown.</p></section>` };
+}
+
+function memberScreen(id) {
+  const m = member(id), u = me(), isMe = m.id === u.id, state = isMe ? 'self' : connState(u.id, m.id), full = isMe || state === 'connected';
+  const spares = db.items.filter(i => i.owner === m.id && i.available);
+  let connect = '';
+  if (state === 'none') connect = `<button class="btn primary block" data-action="connect" data-id="${m.id}">Request to connect</button>`;
+  else if (state === 'requested') connect = `<div class="sub" style="display:flex;gap:8px">${icon('clock', 18)} Request sent. You'll be connected once ${esc(first(m.id))} connects back.</div>`;
+  else if (state === 'incoming') connect = `<p>${esc(first(m.id))} asked to connect with you.</p><button class="btn primary block" data-action="connect" data-id="${m.id}">Connect back</button>`;
+  else if (state === 'connected') connect = `<button class="btn primary block" data-action="open" data-type="chat" data-id="${m.id}">Message ${esc(first(m.id))}</button>`;
+  else connect = `<button class="btn" data-action="sheet" data-v="editProfile">Edit profile</button>`;
+  const inviter = member(m.invitedBy);
+  return { title: m.name, back: true, body: `
+    <section class="panel"><div class="pad" style="gap:14px">
+      <div style="display:flex;gap:16px;align-items:center">${avatar(m.id, 64)}<div style="display:grid;gap:4px"><h1>${esc(m.name)}</h1>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="tag">${ROLES[m.role]}</span><span class="sub">${esc(full ? m.region : area(m))}${isMe ? '' : ` · ~${miles(u, m)} mi away`}</span></div></div></div>
+      ${connect}</div></section>
+    ${m.products.length ? panel('Produces', `<div class="pad">${esc(m.products.join(' · '))}</div>`) : ''}
+    ${full ? `${m.bio ? panel('About', `<div class="pad">${esc(m.bio)}</div>`) : ''}
+      ${m.skills.length ? panel('Skills', `<div class="pad">${esc(m.skills.join(' · '))}</div>`) : ''}
+      ${inviter ? panel('Invited by', `<div class="pad">${esc(inviter.name)}</div>`) : ''}`
+      : `<div class="note clay">${icon('lock')}<span>Connect with ${esc(first(m.id))} to see their full profile and skills, and to message them.</span></div>`}
+    ${panel(`Spare items (${spares.length})`, spares.map(i => itemRow(i, false)).join('') || emptyRow('Nothing listed right now.'))}` };
+}
+
+function inboxScreen() {
+  const u = me(), mine = db.trades.filter(t => t.owner === u.id || t.requester === u.id).sort((a, b) => b.updated - a.updated);
+  const needs = mine.filter(t => waitingOn(t) === u.id), others = mine.filter(t => waitingOn(t) !== u.id);
+  const pending = u.isAdmin ? db.members.filter(m => m.status === 'pending') : [];
+  const incoming = incomingRequests(u.id), conns = connections(u.id);
+  const lastMsg = id => db.messages.filter(x => (x.from === id && x.to === u.id) || (x.to === id && x.from === u.id)).sort((a, b) => b.at - a.at)[0];
+  return { title: 'Inbox', body: `
+    ${pending.length ? panel('Members to review', pending.map(m => `<div class="pad" style="border-bottom:1px solid var(--line)">
+      <div style="display:flex;gap:12px;align-items:center">${avatar(m.id, 40)}<div><strong>${esc(m.name)}</strong><div class="tiny">Invited by ${esc(nameOf(m.invitedBy))} · signed in with ${esc(m.signIn)}</div></div></div>
+      <div class="sub">${ROLES[m.role]} · ${esc(m.region)}${m.bio ? ` · ${esc(m.bio)}` : ''}</div>
+      <div class="toolbar"><button class="btn primary" data-action="approve" data-id="${m.id}">Approve</button><button class="btn danger" data-action="declineMember" data-id="${m.id}">Decline</button></div></div>`).join('')) : ''}
+    ${panel('Needs your response', needs.map(tradeRow).join('') || emptyRow("You're all caught up."))}
+    ${incoming.length ? panel('Connection requests', incoming.map(id => `<div class="row">${avatar(id)}<button class="grow linkbtn" style="text-align:left;color:var(--fg)" data-action="open" data-type="member" data-id="${id}"><span class="title">${esc(nameOf(id))}</span><br><span class="sub">wants to connect</span></button>
+      <button class="btn primary" data-action="connect" data-id="${id}">Connect back</button></div>`).join('')) : ''}
+    ${panel('Messages', conns.map(id => { const lm = lastMsg(id); return `<button class="row" data-action="open" data-type="chat" data-id="${id}">${avatar(id)}<span class="grow"><span class="title">${esc(nameOf(id))}</span><br><span class="sub">${esc(lm ? lm.text : 'Say hello')}</span></span>${lm ? `<span class="tiny">${ago(lm.at)}</span>` : ''}</button>`; }).join('')
+      || emptyRow('Connect with someone to message them.'))}
+    ${others.length ? panel('Your trades', others.map(tradeRow).join('')) : ''}` };
+}
+
+function chatScreen(id) {
+  const u = me(), msgs = db.messages.filter(x => (x.from === id && x.to === u.id) || (x.to === id && x.from === u.id)).sort((a, b) => a.at - b.at);
+  const ok = connState(u.id, id) === 'connected';
+  return { title: nameOf(id), back: true, body: `<section class="panel">
+    <div class="chat">${msgs.map(x => `<div class="bubble ${x.from === u.id ? 'mine' : ''}">${esc(x.text)}</div>`).join('') || '<div class="sub" style="text-align:center">No messages yet.</div>'}</div>
+    ${ok ? `<div class="composer" style="border-top:1px solid var(--line)"><textarea id="chat-input" rows="1" placeholder="Message" aria-label="Message"></textarea><button class="btn primary" data-action="sendMessage" data-id="${id}" aria-label="Send">${icon('send', 18)}</button></div>`
+      : `<div class="pad"><span class="sub">You can message each other once you're both connected.</span></div>`}</section>` };
+}
+
+// ---------- Sheets ----------
+function sheet(title, body, footer = '') {
+  return `<div class="sheet-backdrop"><div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}">
+    <div class="sheet-head"><h2>${esc(title)}</h2><button class="iconbtn" data-action="close" aria-label="Close">${icon('close')}</button></div>
+    <div class="sheet-body">${body}${ui.sheet?.formError ? `<div class="error">${esc(ui.sheet.formError)}</div>` : ''}${footer}</div></div></div>`;
+}
+const field = (id, label, input) => `<div class="field"><label for="${id}">${label}</label>${input}</div>`;
+
+function renderSheet() {
+  const s = ui.sheet; if (!s) return '';
+  const u = me();
+  switch (s.type) {
+    case 'signin': return sheet(`Sign in with ${s.id}`, `<p class="sub">Demo: the real app verifies you with ${esc(s.id)}. Choose who to sign in as.</p>
+      <div class="panel">${db.members.filter(m => m.status !== 'declined').map(m => `<button class="row" data-action="signInAs" data-id="${m.id}">${avatar(m.id)}<span class="grow"><span class="title">${esc(m.name)}</span><br>
+        <span class="sub">${m.status === 'pending' ? 'Pending review' : m.isAdmin ? 'Admin · ' + ROLES[m.role] : ROLES[m.role]}</span></span></button>`).join('')}</div>`);
+    case 'join':
+      if (!s.invite) return sheet('Join Cottage Connect', field('join-code', 'Invite code', `<input id="join-code" autocomplete="off" autocapitalize="characters" style="font-family:ui-monospace,monospace;letter-spacing:.1em" autofocus>`)
+        + (s.codeError ? `<div class="error">That code isn't valid or has already been used.</div>` : `<div class="hint">Ask a current member for a code. Try HARVEST for the demo.</div>`),
+        `<button class="btn primary block" data-action="checkCode">Next</button>`);
+      return sheet('Join Cottage Connect', `<div class="note">${icon('check')}<span>Invited by ${esc(nameOf(db.invites.find(i => i.code === s.invite).by))}. An admin reviews every new member.</span></div>
+        <div class="field"><label>Sign in with</label><div class="seg">${['Apple', 'Google', 'Phone'].map(m => `<button data-action="joinMethod" data-v="${m}" aria-pressed="${s.method === m}">${m}</button>`).join('')}</div></div>
+        ${field('join-name', 'Name', '<input id="join-name" autofocus>')}
+        ${field('join-role', 'I am a', `<select id="join-role">${Object.entries(ROLES).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select>`)}
+        ${field('join-region', 'Town and state', '<input id="join-region" placeholder="Kingston, NY">')}
+        ${field('join-bio', 'A little about you', '<textarea id="join-bio"></textarea>')}
+        ${field('join-products', 'What you produce (comma separated)', '<input id="join-products" placeholder="Eggs, honey">')}
+        ${field('join-skills', 'Skills (comma separated)', '<input id="join-skills" placeholder="Canning, fencing">')}`,
+        `<button class="btn primary block" data-action="join">Request to join</button>`);
+    case 'addItem': return sheet('New spare item', `${field('item-title', 'What can you spare?', '<input id="item-title" autofocus placeholder="Pastured eggs">')}
+      ${field('item-cat', 'Category', `<select id="item-cat">${Object.entries(CATEGORIES).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select>`)}
+      ${field('item-qty', 'How much?', '<input id="item-qty" placeholder="2 dozen, or 2 hours of help">')}
+      ${field('item-details', 'Details', '<textarea id="item-details"></textarea>')}`, `<button class="btn primary block" data-action="addItem">Add item</button>`);
+    case 'startTrade': {
+      const i = item(s.id), mine = db.items.filter(x => x.owner === u.id && x.available);
+      return sheet('Start a trade', `<div class="panel">${itemRow(i)}</div>
+        <p class="sub">${esc(first(i.owner))} will be notified and will look through your spare items to pick what seems fair. You can then accept, decline, or propose something else.</p>
+        ${field('trade-note', 'Add a note (optional)', '<textarea id="trade-note" autofocus placeholder="Would love some for the winter!"></textarea>')}
+        ${panel(`Your spare items (${mine.length})`, mine.map(x => itemRow(x, false)).join('') || `<div class="empty" style="color:var(--clay)">You haven't listed anything yet. Add spare items so ${esc(first(i.owner))} has something to choose from.</div>`)}`,
+        `<button class="btn primary block" data-action="startTrade" data-id="${i.id}">Send to ${esc(first(i.owner))}</button>`);
+    }
+    case 'picker': {
+      const t = db.trades.find(x => x.id === s.id);
+      if (!s.selected) s.selected = new Set(t.offered);
+      const pool = db.items.filter(x => x.owner === t.requester && (x.available || t.offered.includes(x.id)));
+      const firstAsk = t.status === 'awaitingOwner' && !t.offered.length;
+      return sheet(firstAsk ? 'Make an ask' : 'Propose something new', `<p class="sub">${u.id === t.owner ? `Pick what you'd like from ${esc(first(t.requester))}'s spare items.` : 'Choose what you would offer instead.'}</p>
+        <div style="display:grid;gap:8px">${pool.map(x => `<button class="pick" data-action="togglePick" data-id="${x.id}" aria-pressed="${s.selected.has(x.id)}">${catIcon(x.category)}
+          <span class="grow" style="flex:1;min-width:0"><strong>${esc(x.title)}</strong><br><span class="sub">${esc(x.quantity)}</span></span><span class="check">${s.selected.has(x.id) ? icon('check', 14) : ''}</span></button>`).join('')
+          || '<p class="sub">No spare items listed. Use the note to ask for time, a skill, or something else.</p>'}</div>
+        ${field('pick-note', 'Note', `<textarea id="pick-note" placeholder="Plus an hour of weeding?">${esc(s.note || '')}</textarea>`)}`,
+        `<button class="btn primary block" data-action="propose">Send</button>`);
+    }
+    case 'addGuide': return sheet('Share know-how', `${field('guide-title', 'Title', '<input id="guide-title" autofocus placeholder="Saving tomato seeds">')}
+      ${field('guide-topic', 'Topic', `<select id="guide-topic">${TOPICS.map(t => `<option>${t}</option>`).join('')}</select>`)}
+      ${field('guide-body', 'What you know', '<textarea id="guide-body" style="min-height:160px"></textarea>')}`, `<button class="btn primary block" data-action="addGuide">Publish</button>`);
+    case 'addPost': return sheet('New post', `${field('post-title', 'Title', '<input id="post-title" autofocus>')}
+      ${field('post-body', "What's on your mind?", '<textarea id="post-body" style="min-height:140px"></textarea>')}`, `<button class="btn primary block" data-action="addPost">Post</button>`);
+    case 'editProfile': return sheet('Edit profile', `<div class="panel-head" style="padding:0">Shown to everyone</div>
+      ${field('pf-name', 'Name', `<input id="pf-name" value="${esc(u.name)}">`)}
+      ${field('pf-role', 'I am a', `<select id="pf-role">${Object.entries(ROLES).map(([k, v]) => `<option value="${k}" ${u.role === k ? 'selected' : ''}>${v}</option>`).join('')}</select>`)}
+      ${field('pf-products', 'What you produce', `<input id="pf-products" value="${esc(u.products.join(', '))}">`)}
+      <div class="panel-head" style="padding:0">Shown once you're connected</div>
+      ${field('pf-region', 'Town and state', `<input id="pf-region" value="${esc(u.region)}">`)}
+      ${field('pf-bio', 'About you', `<textarea id="pf-bio">${esc(u.bio)}</textarea>`)}
+      ${field('pf-skills', 'Skills', `<input id="pf-skills" value="${esc(u.skills.join(', '))}">`)}
+      <div class="hint">Before connecting, people only see your state and an approximate distance.</div>`, `<button class="btn primary block" data-action="saveProfile">Save</button>`);
+    case 'me': {
+      const items = db.items.filter(i => i.owner === u.id), invites = db.invites.filter(i => i.by === u.id);
+      return sheet('You', `<div class="panel"><button class="row" data-action="open" data-type="member" data-id="${u.id}" onclick="ui.sheet=null">${avatar(u.id, 48)}<span class="grow"><span class="title">${esc(u.name)}</span><br>
+          <span class="sub">${ROLES[u.role]}${u.isAdmin ? ' · Admin' : ''}</span></span><span class="chev">${icon('chev', 16)}</span></button></div>
+        ${panel('Items I can spare', items.map(i => itemRow(i, false)).join('') + `<div class="pad"><button class="btn" data-action="sheet" data-v="addItem">${icon('plus', 16)} Add spare item</button><span class="hint">Veggies, meat, dairy, eggs, wood, or your time and skills.</span></div>`)}
+        ${panel('Invite someone', invites.map(i => `<div class="row"><span class="grow" style="font-family:ui-monospace,monospace;font-weight:700;letter-spacing:.08em">${i.code}</span>
+          ${i.usedBy ? `<span class="tiny">Used by ${esc(nameOf(i.usedBy))}</span>` : `<button class="btn" data-action="copyInvite" data-v="${i.code}">Copy invite</button>`}</div>`).join('')
+          + `<div class="pad"><button class="btn" data-action="createInvite">Create invite code</button><span class="hint">New members join by invitation and are reviewed by an admin before they can trade.</span></div>`)}
+        ${panel('Coming soon', `<div class="row" style="cursor:default">${icon('calendar')}<span class="grow">Events & Workshops</span></div><div class="row" style="cursor:default">${icon('tools')}<span class="grow">Tool Library</span></div>`)}
+        ${panel('Demo', `<div class="pad"><span class="sub">Switch member to play the other side of a trade.</span><div class="toolbar">${db.members.filter(m => m.status === 'approved' && m.id !== u.id).map(m => `<button class="btn" data-action="switchTo" data-id="${m.id}">${avatar(m.id, 22)} ${esc(first(m.id))}</button>`).join('')}</div>
+          <div class="toolbar"><button class="btn" data-action="signOut">Sign out</button><button class="btn danger" data-action="resetDemo">Reset demo data</button></div></div>`)}`);
+    }
+  }
+  return '';
+}
+
+// ---------- Shell ----------
+const TABS = [['barter', 'Barter'], ['learn', 'Learn'], ['community', 'Community'], ['people', 'People'], ['inbox', 'Inbox']];
+const BRAND = `<svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="var(--moss)"/><path d="M9 22c0-7 5-12 14-12 0 8-5 13-13 13" fill="none" stroke="var(--moss-ink)" stroke-width="2" stroke-linecap="round"/><path d="M9 22c3-4 6-6 10-8" fill="none" stroke="var(--moss-ink)" stroke-width="2" stroke-linecap="round"/></svg>`;
+
+function welcome() {
+  return `<div class="welcome"><div class="welcome-card">
+    <div style="display:grid;justify-items:center;gap:14px">${BRAND.replace(/width="30" height="30"/, 'width="72" height="72"')}<h1>Cottage Connect</h1>
+      <p class="sub" style="font-size:1.05rem">Barter, learn, and lean on your neighbors. For cottage skills practitioners and the farmers they work with.</p></div>
+    <div class="btns">
+      <button class="btn primary block" data-action="sheet" data-v="signin" data-id="Apple">Continue with Apple</button>
+      <button class="btn primary block" data-action="sheet" data-v="signin" data-id="Google">Continue with Google</button>
+      <button class="btn primary block" data-action="sheet" data-v="signin" data-id="Phone">Continue with phone number</button>
+      <button class="linkbtn" style="padding-top:8px" data-action="sheet" data-v="join">New here? Join with an invite code</button>
+    </div>
+    <p class="tiny">Members join by invitation only. This demo keeps its data in your browser.</p>
+  </div></div>`;
+}
+
+function pendingScreen(u) {
+  return `<div class="welcome"><div class="welcome-card">${BRAND.replace(/width="30" height="30"/, 'width="64" height="64"')}
+    ${u.status === 'declined' ? `<h1>Your request wasn't approved</h1>` : `<h1>Thanks for joining, ${esc(u.name.split(' ')[0])}!</h1>
+    <p class="sub">${esc(nameOf(u.invitedBy))} invited you. An admin is reviewing your profile, and you'll be able to barter and post once you're approved.</p>
+    <div class="note">${icon('clock')}<span>Demo: sign out and sign in as Rosa (admin) to approve yourself from her Inbox.</span></div>`}
+    <button class="btn" data-action="signOut">Sign out</button></div></div>`;
+}
+
+function screenFor(view) {
+  switch (view.type) {
+    case 'item': return itemScreen(view.id);
+    case 'trade': return tradeScreen(view.id);
+    case 'guide': return guideScreen(view.id);
+    case 'post': return postScreen(view.id);
+    case 'member': return memberScreen(view.id);
+    case 'chat': return chatScreen(view.id);
+  }
+}
+
+function render() {
+  // Keep what the user typed in an open sheet across re-renders.
+  const typed = {};
+  document.querySelectorAll('.sheet input, .sheet textarea, .sheet select').forEach(el => { if (el.id) typed[el.id] = el.value; });
+  renderView();
+  for (const [id, v] of Object.entries(typed)) { const el = document.getElementById(id); if (el && el.closest('.sheet')) el.value = v; }
+}
+
+function renderView() {
+  const root = document.getElementById('root'), u = me();
+  if (!u) { root.innerHTML = welcome() + renderSheet() + toastHtml(); return; }
+  if (u.status !== 'approved') { root.innerHTML = pendingScreen(u) + toastHtml(); return; }
+  const top = ui.stack[ui.stack.length - 1];
+  const scr = top ? screenFor(top) : { barter: barterScreen, learn: learnScreen, community: communityScreen, people: peopleScreen, inbox: inboxScreen }[ui.tab]();
+  const count = inboxCount();
+  const badge = n => n ? `<span class="badge">${n}</span>` : '';
+  root.innerHTML = `<div class="app">
+    <nav class="side" aria-label="Sections"><div class="brand">${BRAND}<span>Cottage Connect</span></div>
+      ${TABS.map(([k, v]) => `<button class="navbtn" data-action="tab" data-v="${k}" aria-current="${ui.tab === k}">${icon(k)}<span>${v}</span>${k === 'inbox' ? badge(count) : ''}</button>`).join('')}
+      <div class="side-label">Coming soon</div>
+      <div class="navbtn soon">${icon('calendar')}<span>Events & Workshops</span></div>
+      <div class="navbtn soon">${icon('tools')}<span>Tool Library</span></div>
+    </nav>
+    <main class="main ${scr.wide ? 'wide' : ''}">
+      <header class="topbar">
+        ${scr.back ? `<button class="iconbtn" data-action="back" aria-label="Back">${icon('back', 22)}</button>` : ''}
+        <h1>${esc(scr.title)}</h1>
+        <button class="iconbtn" data-action="sheet" data-v="me" aria-label="Your profile">${avatar(u.id, 34)}</button>
+      </header>
+      <div class="content">${scr.body}</div>
+    </main>
+    <nav class="tabbar" aria-label="Sections">${TABS.map(([k, v]) => `<button class="tab" data-action="tab" data-v="${k}" aria-current="${ui.tab === k}">${icon(k, 22)}<span>${v}</span>${k === 'inbox' ? badge(count) : ''}</button>`).join('')}</nav>
+  </div>${renderSheet()}${toastHtml()}`;
+}
+const toastHtml = () => ui.toast ? `<div class="toast" role="status">${esc(ui.toast)}</div>` : '';
+
+render();
+</script>

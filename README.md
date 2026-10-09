@@ -2,7 +2,10 @@
 
 A SwiftUI multiplatform app where cottage skills practitioners and farmers barter, share know-how, and support each other. Strictly barter: no money changes hands.
 
-## Build and run
+## Try it in a browser
+`web/index.html` is a browser version of the same app with the same demo data. Open it in any browser on a Mac, iPhone, or PC; no install needed. Data is kept in that browser.
+
+## Build and run (native app)
 Requires a Mac with Xcode 15 or newer.
 
 ```sh
