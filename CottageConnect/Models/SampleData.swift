@@ -92,10 +92,26 @@ enum SampleData {
             Guide(authorID: june.uid, title: "Overwintering bees in the Northeast", topic: .animals,
                   body: "Leave at least 60 lbs of honey per hive. Add a moisture quilt, reduce entrances, and wrap hives on the windward side. Heft from behind in January to check stores.",
                   createdAt: ago(80)),
-            Guide(authorID: sam.uid, title: "Splitting and seasoning firewood", topic: .building,
+            Guide(authorID: sam.uid, title: "Splitting and seasoning firewood", topic: .howTo,
                   body: "Split green, stack bark-up in single rows off the ground, and cover only the top. Oak needs a full year; maple and ash are ready in six to nine months.",
                   createdAt: ago(60)),
         ].forEach { context.insert($0) }
+
+        let mozzarella = Guide(authorID: rosa.uid, title: "Fresh mozzarella in 30 minutes", topic: .recipe,
+              body: "Ingredients: 1 gallon whole milk (not ultra-pasteurized), 1½ tsp citric acid in ¼ cup water, ¼ tsp liquid rennet in ¼ cup water, 1 tsp salt.\n\n1. Stir the citric acid into cold milk, then heat to 90°F.\n2. Off the heat, stir in the rennet for 30 seconds. Rest 5 minutes until it sets.\n3. Cut the curd into 1-inch cubes and heat to 105°F, stirring gently.\n4. Ladle curds into a bowl and drain the whey.\n5. Microwave 30 seconds at a time, folding and stretching until glossy. Salt and shape.",
+              createdAt: ago(20))
+        let bedPlan = Guide(authorID: sam.uid, title: "4x8 cedar raised bed plan", topic: .buildingPlan,
+              body: "Cut list: four 8 ft and four 4 ft cedar 2x10s, six 20 in. 4x4 posts, 3 in. exterior screws.\n\n1. Screw the 4 ft boards to the corner posts to make two end frames.\n2. Stand the ends 8 ft apart and attach the long boards, adding a middle post on each long side to stop bowing.\n3. Level on site, line the bottom with cardboard, and fill with a 60/40 topsoil and compost mix.",
+              createdAt: ago(9))
+        let canning = Guide(authorID: june.uid, title: "Water-bath canning, step by step", topic: .preserving,
+              body: "Use only tested recipes for high-acid foods: fruit, jams, pickles, and acidified tomatoes.\n\n1. Wash jars and keep them hot. New lids only.\n2. Fill hot jars, leaving the headspace the recipe calls for. Wipe rims.\n3. Lower jars into boiling water covering them by 1 inch. Start the timer once it returns to a boil.\n4. Process for the recipe time, adding time for altitude.\n5. Let jars sit in the pot 5 minutes, then cool 12 to 24 hours. Check every lid has sealed.",
+              createdAt: ago(40))
+        [mozzarella, bedPlan, canning].forEach { context.insert($0) }
+        context.insert(Comment(postID: bedPlan.uid, authorID: rosa.uid,
+                               text: "Built this last spring. Doubling the middle posts kept the sides perfectly straight.", createdAt: ago(6)))
+        context.insert(Comment(postID: mozzarella.uid, authorID: june.uid, text: "Does this work with raw goat milk?", createdAt: ago(8)))
+        context.insert(Comment(postID: mozzarella.uid, authorID: rosa.uid, text: "Yes, but the curd is softer. Add a pinch of calcium chloride.",
+                               replyToAuthorID: june.uid, createdAt: ago(7)))
 
         let swap = Post(authorID: june.uid, title: "Seed swap at the grange, Oct 20",
                         body: "Bring saved seeds, labeled with variety and year. Coffee and pie provided.", createdAt: ago(30))

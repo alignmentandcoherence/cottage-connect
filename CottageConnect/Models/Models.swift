@@ -230,16 +230,16 @@ final class TradeEvent {
 }
 
 enum GuideTopic: String, Codable, CaseIterable, Identifiable {
-    case growing = "Growing"
-    case preserving = "Preserving"
-    case animals = "Animals"
-    case crafts = "Crafts"
-    case building = "Building"
+    case recipe = "Recipe"
+    case buildingPlan = "Building plan"
+    case preserving = "Canning & preserving"
+    case howTo = "How-to"
+    case animals = "Animal care"
     case other = "Other"
     var id: String { rawValue }
 }
 
-/// Shared know-how: a how-to, tip, or reference written by a member.
+/// A free resource anyone can read: a recipe, building plan, canning instructions, or how-to.
 @Model
 final class Guide {
     var uid: UUID
@@ -248,8 +248,11 @@ final class Guide {
     var topic: GuideTopic
     var body: String
     var createdAt: Date
+    /// An optional photo or drawing, such as a recipe card or plan.
+    @Attribute(.externalStorage) var attachment: Data?
 
-    init(authorID: UUID, title: String, topic: GuideTopic, body: String, createdAt: Date = .now) {
+    init(authorID: UUID, title: String, topic: GuideTopic, body: String, attachment: Data? = nil, createdAt: Date = .now) {
+        self.attachment = attachment
         self.uid = UUID()
         self.authorID = authorID
         self.title = title

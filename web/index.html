@@ -116,6 +116,8 @@ button.row:hover, .row.click:hover { background: var(--sunken); }
 .detail-photo img[src^="data:image/jpeg"] { width: 100%; height: 100%; object-fit: cover; filter: none; }
 .upload { display: grid; place-items: center; text-align: center; aspect-ratio: 16 / 9; max-width: 100%; border: 2px dashed var(--line); border-radius: 12px; cursor: pointer; color: var(--muted); overflow: hidden; background: var(--bg); }
 .upload img { width: 100%; height: 100%; object-fit: cover; }
+.attachment { margin: 0; display: grid; gap: 6px; }
+.attachment img { width: 100%; border-radius: 10px; border: 1px solid var(--line); background: #fff; }
 .item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; align-content: start; text-align: left; cursor: pointer; color: inherit; }
 .card:hover { border-color: var(--moss); }
@@ -217,9 +219,9 @@ const photoOf = i => (i.photo && i.photo.startsWith('data:') ? i.photo : IMG[i.p
 // ---------- Data ----------
 const CATEGORIES = { veggies: 'Veggies', fruit: 'Fruit', meat: 'Meat', dairy: 'Dairy', eggs: 'Eggs', wood: 'Wood', timeSkill: 'Time + Skill', other: 'Other' };
 const ROLES = { practitioner: 'Practitioner', farmer: 'Farmer', both: 'Farmer & Practitioner' };
-const TOPICS = ['Growing', 'Preserving', 'Animals', 'Crafts', 'Building', 'Other'];
+const TOPICS = ['Recipe', 'Building plan', 'Canning & preserving', 'How-to', 'Animal care', 'Other'];
 const ACTIONS = { started: 'started a trade', asked: 'made an ask', countered: 'proposed something new', accepted: 'accepted', declined: 'declined' };
-const STORE_KEY = 'cottage-connect-demo-v1';
+const STORE_KEY = 'cottage-connect-demo-v2';
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 const hoursAgo = h => Date.now() - h * 3600e3;
@@ -260,10 +262,13 @@ function seed() {
       { trade: 't2', actor: 'sam', action: 'started', items: [], note: "That cheddar looks amazing. Take a look at what I've got.", at: hoursAgo(1) },
     ],
     guides: [
-      { id: 'g1', author: 'rosa', title: 'Starting a sauerkraut crock', topic: 'Preserving', body: 'Shred 5 lbs of cabbage and mix in 3 tbsp of salt. Massage until it releases liquid, then pack tightly into a crock so the brine covers it. Weigh it down, cover with a cloth, and taste after a week. Keep it cool, around 65°F, for the best texture.', at: hoursAgo(120) },
-      { id: 'g2', author: 'eli', title: 'Lambing season checklist', topic: 'Animals', body: "Clean jugs with fresh bedding, iodine for navels, colostrum on hand, a heat lamp with a safe mount, and the vet's number on the barn door. Check ewes every few hours once bags fill.", at: hoursAgo(150) },
-      { id: 'g3', author: 'june', title: 'Overwintering bees in the Northeast', topic: 'Animals', body: 'Leave at least 60 lbs of honey per hive. Add a moisture quilt, reduce entrances, and wrap hives on the windward side. Heft from behind in January to check stores.', at: hoursAgo(80) },
-      { id: 'g4', author: 'sam', title: 'Splitting and seasoning firewood', topic: 'Building', body: 'Split green, stack bark-up in single rows off the ground, and cover only the top. Oak needs a full year; maple and ash are ready in six to nine months.', at: hoursAgo(60) },
+      { id: 'g1', author: 'rosa', title: 'Starting a sauerkraut crock', topic: 'Canning & preserving', body: 'Shred 5 lbs of cabbage and mix in 3 tbsp of salt. Massage until it releases liquid, then pack tightly into a crock so the brine covers it. Weigh it down, cover with a cloth, and taste after a week. Keep it cool, around 65°F, for the best texture.', at: hoursAgo(120) },
+      { id: 'g2', author: 'eli', title: 'Lambing season checklist', topic: 'Animal care', body: "Clean jugs with fresh bedding, iodine for navels, colostrum on hand, a heat lamp with a safe mount, and the vet's number on the barn door. Check ewes every few hours once bags fill.", at: hoursAgo(150) },
+      { id: 'g3', author: 'june', title: 'Overwintering bees in the Northeast', topic: 'Animal care', body: 'Leave at least 60 lbs of honey per hive. Add a moisture quilt, reduce entrances, and wrap hives on the windward side. Heft from behind in January to check stores.', at: hoursAgo(80) },
+      { id: 'g4', author: 'sam', title: 'Splitting and seasoning firewood', topic: 'How-to', body: 'Split green, stack bark-up in single rows off the ground, and cover only the top. Oak needs a full year; maple and ash are ready in six to nine months.', at: hoursAgo(60) },
+      { id: 'g5', author: 'rosa', title: 'Fresh mozzarella in 30 minutes', topic: 'Recipe', body: 'Ingredients: 1 gallon whole milk (not ultra-pasteurized), 1½ tsp citric acid in ¼ cup water, ¼ tsp liquid rennet in ¼ cup water, 1 tsp salt.\n\n1. Stir the citric acid into cold milk, then heat to 90°F.\n2. Off the heat, stir in the rennet for 30 seconds. Rest 5 minutes until it sets.\n3. Cut the curd into 1-inch cubes and heat to 105°F, stirring gently.\n4. Ladle curds into a bowl and drain the whey.\n5. Microwave 30 seconds at a time, folding and stretching until glossy. Salt and shape.', at: hoursAgo(20), files: [] },
+      { id: 'g6', author: 'sam', title: '4x8 cedar raised bed plan', topic: 'Building plan', body: 'Cut list: four 8 ft and four 4 ft cedar 2x10s, six 20 in. 4x4 posts, 3 in. exterior screws.\n\n1. Screw the 4 ft boards to the corner posts to make two end frames.\n2. Stand the ends 8 ft apart and attach the long boards, adding a middle post on each long side to stop bowing.\n3. Level on site, line the bottom with cardboard, and fill with a 60/40 topsoil and compost mix.', at: hoursAgo(9), files: [{ name: 'raised-bed-plan.svg', type: 'image/svg+xml', data: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgMzYwIiBmb250LWZhbWlseT0iSGVsdmV0aWNhLCBBcmlhbCwgc2Fucy1zZXJpZiI+PHJlY3Qgd2lkdGg9IjY0MCIgaGVpZ2h0PSIzNjAiIGZpbGw9IiNmNmYxZTQiLz48ZyBzdHJva2U9IiNjOWJmYTYiIHN0cm9rZS13aWR0aD0iMSI+PGxpbmUgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjM2MCIvPjxsaW5lIHgxPSIyMCIgeTE9IjAiIHgyPSIyMCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI0MCIgeTE9IjAiIHgyPSI0MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI2MCIgeTE9IjAiIHgyPSI2MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI4MCIgeTE9IjAiIHgyPSI4MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSIxMDAiIHkxPSIwIiB4Mj0iMTAwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjEyMCIgeTE9IjAiIHgyPSIxMjAiIHkyPSIzNjAiLz48bGluZSB4MT0iMTQwIiB5MT0iMCIgeDI9IjE0MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSIxNjAiIHkxPSIwIiB4Mj0iMTYwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjE4MCIgeTE9IjAiIHgyPSIxODAiIHkyPSIzNjAiLz48bGluZSB4MT0iMjAwIiB5MT0iMCIgeDI9IjIwMCIgeTI9IjM2MCIvPjxsaW5lIHgxPSIyMjAiIHkxPSIwIiB4Mj0iMjIwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjI0MCIgeTE9IjAiIHgyPSIyNDAiIHkyPSIzNjAiLz48bGluZSB4MT0iMjYwIiB5MT0iMCIgeDI9IjI2MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSIyODAiIHkxPSIwIiB4Mj0iMjgwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjMwMCIgeTE9IjAiIHgyPSIzMDAiIHkyPSIzNjAiLz48bGluZSB4MT0iMzIwIiB5MT0iMCIgeDI9IjMyMCIgeTI9IjM2MCIvPjxsaW5lIHgxPSIzNDAiIHkxPSIwIiB4Mj0iMzQwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjM2MCIgeTE9IjAiIHgyPSIzNjAiIHkyPSIzNjAiLz48bGluZSB4MT0iMzgwIiB5MT0iMCIgeDI9IjM4MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI0MDAiIHkxPSIwIiB4Mj0iNDAwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjQyMCIgeTE9IjAiIHgyPSI0MjAiIHkyPSIzNjAiLz48bGluZSB4MT0iNDQwIiB5MT0iMCIgeDI9IjQ0MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI0NjAiIHkxPSIwIiB4Mj0iNDYwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjQ4MCIgeTE9IjAiIHgyPSI0ODAiIHkyPSIzNjAiLz48bGluZSB4MT0iNTAwIiB5MT0iMCIgeDI9IjUwMCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI1MjAiIHkxPSIwIiB4Mj0iNTIwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjU0MCIgeTE9IjAiIHgyPSI1NDAiIHkyPSIzNjAiLz48bGluZSB4MT0iNTYwIiB5MT0iMCIgeDI9IjU2MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI1ODAiIHkxPSIwIiB4Mj0iNTgwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjYwMCIgeTE9IjAiIHgyPSI2MDAiIHkyPSIzNjAiLz48bGluZSB4MT0iNjIwIiB5MT0iMCIgeDI9IjYyMCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI2NDAiIHkxPSIwIiB4Mj0iNjQwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjAiIHkxPSIwIiB4Mj0iNjQwIiB5Mj0iMCIvPjxsaW5lIHgxPSIwIiB5MT0iMjAiIHgyPSI2NDAiIHkyPSIyMCIvPjxsaW5lIHgxPSIwIiB5MT0iNDAiIHgyPSI2NDAiIHkyPSI0MCIvPjxsaW5lIHgxPSIwIiB5MT0iNjAiIHgyPSI2NDAiIHkyPSI2MCIvPjxsaW5lIHgxPSIwIiB5MT0iODAiIHgyPSI2NDAiIHkyPSI4MCIvPjxsaW5lIHgxPSIwIiB5MT0iMTAwIiB4Mj0iNjQwIiB5Mj0iMTAwIi8+PGxpbmUgeDE9IjAiIHkxPSIxMjAiIHgyPSI2NDAiIHkyPSIxMjAiLz48bGluZSB4MT0iMCIgeTE9IjE0MCIgeDI9IjY0MCIgeTI9IjE0MCIvPjxsaW5lIHgxPSIwIiB5MT0iMTYwIiB4Mj0iNjQwIiB5Mj0iMTYwIi8+PGxpbmUgeDE9IjAiIHkxPSIxODAiIHgyPSI2NDAiIHkyPSIxODAiLz48bGluZSB4MT0iMCIgeTE9IjIwMCIgeDI9IjY0MCIgeTI9IjIwMCIvPjxsaW5lIHgxPSIwIiB5MT0iMjIwIiB4Mj0iNjQwIiB5Mj0iMjIwIi8+PGxpbmUgeDE9IjAiIHkxPSIyNDAiIHgyPSI2NDAiIHkyPSIyNDAiLz48bGluZSB4MT0iMCIgeTE9IjI2MCIgeDI9IjY0MCIgeTI9IjI2MCIvPjxsaW5lIHgxPSIwIiB5MT0iMjgwIiB4Mj0iNjQwIiB5Mj0iMjgwIi8+PGxpbmUgeDE9IjAiIHkxPSIzMDAiIHgyPSI2NDAiIHkyPSIzMDAiLz48bGluZSB4MT0iMCIgeTE9IjMyMCIgeDI9IjY0MCIgeTI9IjMyMCIvPjxsaW5lIHgxPSIwIiB5MT0iMzQwIiB4Mj0iNjQwIiB5Mj0iMzQwIi8+PGxpbmUgeDE9IjAiIHkxPSIzNjAiIHgyPSI2NDAiIHkyPSIzNjAiLz48L2c+PHJlY3QgeD0iODAiIHk9IjgwIiB3aWR0aD0iNDgwIiBoZWlnaHQ9IjE2MCIgZmlsbD0iI2U3ZDNhZSIgc3Ryb2tlPSIjNmI0YTJiIiBzdHJva2Utd2lkdGg9IjEwIi8+PHJlY3QgeD0iNzQiIHk9Ijc0IiB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIGZpbGw9IiM2YjRhMmIiLz48cmVjdCB4PSI1NDQiIHk9Ijc0IiB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIGZpbGw9IiM2YjRhMmIiLz48cmVjdCB4PSI3NCIgeT0iMjI0IiB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIGZpbGw9IiM2YjRhMmIiLz48cmVjdCB4PSI1NDQiIHk9IjIyNCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjIyIiBmaWxsPSIjNmI0YTJiIi8+PHJlY3QgeD0iMzEwIiB5PSI3NCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIyIiBmaWxsPSIjNmI0YTJiIi8+PHJlY3QgeD0iMzEwIiB5PSIyMjQiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMiIgZmlsbD0iIzZiNGEyYiIvPjxnIHN0cm9rZT0iIzJmNWE4YSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSIjMmY1YThhIj48bGluZSB4MT0iODAiIHkxPSIyODAiIHgyPSI1NjAiIHkyPSIyODAiLz48bGluZSB4MT0iODAiIHkxPSIyNzIiIHgyPSI4MCIgeTI9IjI4OCIvPjxsaW5lIHgxPSI1NjAiIHkxPSIyNzIiIHgyPSI1NjAiIHkyPSIyODgiLz48bGluZSB4MT0iNjAwIiB5MT0iODAiIHgyPSI2MDAiIHkyPSIyNDAiLz48bGluZSB4MT0iNTkyIiB5MT0iODAiIHgyPSI2MDgiIHkyPSI4MCIvPjxsaW5lIHgxPSI1OTIiIHkxPSIyNDAiIHgyPSI2MDgiIHkyPSIyNDAiLz48L2c+PHRleHQgeD0iMzIwIiB5PSIzMDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiMyZjVhOGEiPjggZnQgKHR3byAyeDEwIGNlZGFyIGJvYXJkcyBwZXIgc2lkZSk8L3RleHQ+PHRleHQgeD0iNjEyIiB5PSIxNjUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiMyZjVhOGEiIHRyYW5zZm9ybT0icm90YXRlKDkwIDYxMiAxNjUpIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj40IGZ0PC90ZXh0Pjx0ZXh0IHg9IjMyMCIgeT0iMTY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjNmI0YTJiIj40eDQgcG9zdHMgYXQgY29ybmVycyArIG1pZGRsZTwvdGV4dD48dGV4dCB4PSIzMjAiIHk9IjQ0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzNhM2EyYSI+UkFJU0VEIEJFRCwgNCB4IDggeCAyMCBpbi4gKFRPUCBWSUVXKTwvdGV4dD48L3N2Zz4=' }] },
+      { id: 'g7', author: 'june', title: 'Water-bath canning, step by step', topic: 'Canning & preserving', body: 'Use only tested recipes for high-acid foods: fruit, jams, pickles, and acidified tomatoes.\n\n1. Wash jars and keep them hot. New lids only.\n2. Fill hot jars, leaving the headspace the recipe calls for. Wipe rims.\n3. Lower jars into boiling water covering them by 1 inch. Start the timer once it returns to a boil.\n4. Process for the recipe time, adding time for altitude.\n5. Let jars sit in the pot 5 minutes, then cool 12 to 24 hours. Check every lid has sealed.', at: hoursAgo(40), files: [] },
     ],
     posts: [
       { id: 'p1', author: 'june', title: 'Seed swap at the grange, Oct 20', body: 'Bring saved seeds, labeled with variety and year. Coffee and pie provided.', at: hoursAgo(30) },
@@ -273,6 +278,9 @@ function seed() {
       { id: 'c1', post: 'p1', author: 'sam', replyTo: null, text: 'Is there a table for tools too?', at: hoursAgo(28) },
       { id: 'c2', post: 'p1', author: 'june', replyTo: 'sam', text: 'Yes, bring them along!', at: hoursAgo(27) },
       { id: 'c3', post: 'p2', author: 'rosa', replyTo: null, text: "My neighbor has one. I'll ask!", at: hoursAgo(10) },
+      { id: 'c4', post: 'g6', author: 'rosa', replyTo: null, text: 'Built this last spring. Doubling the middle posts kept the sides perfectly straight.', at: hoursAgo(6) },
+      { id: 'c5', post: 'g5', author: 'june', replyTo: null, text: 'Does this work with raw goat milk?', at: hoursAgo(8) },
+      { id: 'c6', post: 'g5', author: 'rosa', replyTo: 'june', text: 'Yes, but the curd is softer. Add a pinch of calcium chloride.', at: hoursAgo(7) },
     ],
     requests: [
       { from: 'rosa', to: 'june', at: hoursAgo(90) }, { from: 'june', to: 'rosa', at: hoursAgo(89) },
@@ -294,7 +302,7 @@ try { db = JSON.parse(localStorage.getItem(STORE_KEY)) || seed(); } catch { db =
 let session;
 try { session = JSON.parse(localStorage.getItem(STORE_KEY + ':session')) || { userId: null }; } catch { session = { userId: null }; }
 function persist() {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(db)); localStorage.setItem(STORE_KEY + ':session', JSON.stringify(session)); } catch {}
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(db)); localStorage.setItem(STORE_KEY + ':session', JSON.stringify(session)); return true; } catch { return false; }
 }
 
 // UI state (not persisted)
@@ -457,7 +465,9 @@ const actions = {
   addGuide: () => {
     const title = val('guide-title'), body = val('guide-body');
     if (!title || !body) { ui.sheet.formError = 'Add a title and what you know.'; render(); return; }
-    db.guides.unshift({ id: uid(), author: me().id, title, topic: val('guide-topic'), body, at: Date.now() }); persist(); closeSheet(); toast('Guide published');
+    db.guides.unshift({ id: uid(), author: me().id, title, topic: val('guide-topic'), body, files: ui.sheet.file ? [ui.sheet.file] : [], at: Date.now() });
+    if (!persist()) toast('Published, but the file was too big to keep after you close this page.'); else toast('Resource published');
+    closeSheet();
   },
   addPost: () => {
     const title = val('post-title'), body = val('post-body');
@@ -468,7 +478,7 @@ const actions = {
   cancelReply: () => { ui.replyTo = null; render(); },
   addComment: el => {
     const text = val('comment-input'); if (!text) return;
-    const post = db.posts.find(p => p.id === el.dataset.id);
+    const post = db.posts.find(p => p.id === el.dataset.id) || db.guides.find(g => g.id === el.dataset.id);
     db.comments.push({ id: uid(), post: post.id, author: me().id, replyTo: post.author === me().id ? ui.replyTo || null : null, text, at: Date.now() });
     ui.replyTo = null; persist(); render();
   },
@@ -494,6 +504,14 @@ document.addEventListener('input', e => {
   if (e.target.id === 'radius') { ui.radius = +e.target.value; renderKeepFocus('radius'); }
 });
 document.addEventListener('change', e => {
+  if (e.target.id === 'guide-file' && e.target.files?.[0]) {
+    const f = e.target.files[0];
+    if (f.size > 3e6) { toast('Please choose a file under 3 MB.'); return; }
+    const r = new FileReader();
+    r.onload = () => { if (ui.sheet) { ui.sheet.file = { name: f.name, type: f.type || 'application/octet-stream', data: r.result }; render(); } };
+    r.readAsDataURL(f);
+    return;
+  }
   if (e.target.id !== 'item-photo' || !e.target.files?.[0]) return;
   const reader = new FileReader();
   reader.onload = () => {
@@ -628,23 +646,29 @@ function tradeScreen(id) {
 function learnScreen() {
   const q = ui.search.toLowerCase();
   const list = db.guides.filter(g => (!ui.topic || g.topic === ui.topic) && (!q || (g.title + ' ' + g.body).toLowerCase().includes(q)));
-  return { title: 'Learn', body: `
-    <div class="toolbar"><input id="search" class="search" type="search" placeholder="Search guides" value="${esc(ui.search)}" aria-label="Search guides">
-      <button class="btn" data-action="sheet" data-v="addGuide">${icon('plus', 16)} Share know-how</button></div>
-    <div class="chips"><button class="chip" data-action="topic" data-v="" aria-pressed="${!ui.topic}">All topics</button>
+  return { title: 'Free Resources', body: `
+    <div class="note">${icon('learn')}<span>Recipes, building plans, canning instructions and how-tos shared by members. Free for everyone to use.</span></div>
+    <div class="toolbar"><input id="search" class="search" type="search" placeholder="Search recipes, plans, how-tos" value="${esc(ui.search)}" aria-label="Search resources">
+      <button class="btn" data-action="sheet" data-v="addGuide">${icon('plus', 16)} Share a resource</button></div>
+    <div class="chips"><button class="chip" data-action="topic" data-v="" aria-pressed="${!ui.topic}">All</button>
       ${TOPICS.map(t => `<button class="chip" data-action="topic" data-v="${t}" aria-pressed="${ui.topic === t}">${t}</button>`).join('')}</div>
     ${panel('', list.length ? list.map(g => `<button class="row" data-action="open" data-type="guide" data-id="${g.id}">
       <span class="grow"><span style="display:flex;gap:8px;align-items:center;justify-content:space-between"><span class="title">${esc(g.title)}</span><span class="tag clay">${g.topic}</span></span>
-      <span class="sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(g.body)}</span><span class="tiny">by ${esc(nameOf(g.author))}</span></span></button>`).join('')
-      : emptyRow('No guides match yet. Share what you know.'))}` };
+      <span class="sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(g.body)}</span><span class="tiny">by ${esc(nameOf(g.author))} · ${db.comments.filter(c => c.post === g.id).length} comments${(g.files || []).length ? ' · attachment' : ''}</span></span></button>`).join('')
+      : emptyRow('Nothing matches yet. Share what you know.'))}` };
 }
 
 function guideScreen(id) {
   const g = db.guides.find(x => x.id === id);
-  return { title: 'Guide', back: true, body: `<article class="panel"><div class="pad" style="gap:14px">
+  const files = g.files || [];
+  return { title: g.topic, back: true, body: `<article class="panel"><div class="pad" style="gap:14px">
     <span><span class="tag clay">${g.topic}</span></span><h1>${esc(g.title)}</h1>
     <button class="row" style="padding:0" data-action="open" data-type="member" data-id="${g.author}">${avatar(g.author, 28)}<span class="grow"><strong>${esc(nameOf(g.author))}</strong> <span class="tiny">${ago(g.at)}</span></span></button>
-    <p style="max-width:65ch;line-height:1.7">${esc(g.body)}</p></div></article>` };
+    <p style="max-width:65ch;line-height:1.7;white-space:pre-line">${esc(g.body)}</p>
+    ${files.map(f => f.type.startsWith('image/') ? `<figure class="attachment"><img src="${f.data}" alt="${esc(f.name)}"><figcaption class="tiny">${esc(f.name)}</figcaption></figure>`
+      : `<div class="note">${icon('learn')}<span>${esc(f.name)} is attached. PDFs open in the full app once accounts sync between devices.</span></div>`).join('')}
+    </div></article>
+    ${commentsSection(g, 'resource')}` };
 }
 
 function communityScreen() {
@@ -655,27 +679,32 @@ function communityScreen() {
       <span class="sub">${esc(nameOf(p.author))} · ${ago(p.at)} · ${n} comment${n === 1 ? '' : 's'}</span></span><span class="chev">${icon('chev', 16)}</span></button>`; }).join('') || emptyRow('Nothing here yet.'))}` };
 }
 
-function postScreen(id) {
-  const p = db.posts.find(x => x.id === id), u = me(), poster = p.author === u.id;
+// Comments on a post or a free resource. Each member gets one comment until the author replies to them.
+function commentsSection(p, noun) {
+  const u = me(), poster = p.author === u.id;
   const comments = db.comments.filter(c => c.post === p.id).sort((a, b) => a.at - b.at);
-  const allowed = canComment(p, u.id);
-  const composer = allowed ? `
+  const composer = canComment(p, u.id) ? `
     ${ui.replyTo && poster ? `<div class="pad" style="padding-bottom:0"><div class="tiny">Replying to ${esc(nameOf(ui.replyTo))} · <button class="linkbtn" data-action="cancelReply">Cancel</button></div></div>` : ''}
-    <div class="composer"><textarea id="comment-input" rows="1" placeholder="${poster ? 'Reply to your post' : 'Add your comment'}" aria-label="Comment"></textarea>
+    <div class="composer"><textarea id="comment-input" rows="1" placeholder="${poster ? `Reply on your ${noun}` : 'Add your comment'}" aria-label="Comment"></textarea>
       <button class="btn primary" data-action="addComment" data-id="${p.id}">Send</button></div>
-    ${poster ? '' : '<div class="pad" style="padding-top:0"><span class="hint">Each member gets one comment per post until the poster replies to them.</span></div>'}`
+    ${poster ? '' : `<div class="pad" style="padding-top:0"><span class="hint">Each member gets one comment per ${noun} until ${esc(first(p.author))} replies to them.</span></div>`}`
     : `<div class="pad"><div class="note clay">${icon('lock')}<span>You've left your comment. You can comment again once ${esc(first(p.author))} replies to you.</span></div></div>`;
+  return `<section class="panel"><div class="panel-head">Comments</div>
+      ${comments.map(c => `<div class="comment ${c.replyTo ? 'reply' : ''}">
+        <div style="display:flex;gap:8px;align-items:center"><strong>${esc(nameOf(c.author))}</strong>${c.author === p.author ? '<span class="tag">Author</span>' : ''}<span class="tiny" style="margin-left:auto">${ago(c.at)}</span></div>
+        ${c.replyTo ? `<div class="tiny">↪ replying to ${esc(nameOf(c.replyTo))}</div>` : ''}
+        <div>${esc(c.text)}</div>
+        ${poster && c.author !== u.id ? `<div><button class="linkbtn" data-action="replyTo" data-id="${c.author}">Reply</button></div>` : ''}</div>`).join('') || emptyRow('No comments yet.')}
+      ${composer}</section>`;
+}
+
+function postScreen(id) {
+  const p = db.posts.find(x => x.id === id);
   return { title: 'Post', back: true, body: `
     <section class="panel"><div class="pad"><h2>${esc(p.title)}</h2>
       <div style="display:flex;gap:8px;align-items:center">${avatar(p.author, 26)}<strong>${esc(nameOf(p.author))}</strong><span class="tiny">${ago(p.at)}</span></div>
       <p>${esc(p.body)}</p></div></section>
-    <section class="panel"><div class="panel-head">Comments</div>
-      ${comments.map(c => `<div class="comment ${c.replyTo ? 'reply' : ''}">
-        <div style="display:flex;gap:8px;align-items:center"><strong>${esc(nameOf(c.author))}</strong>${c.author === p.author ? '<span class="tag">Poster</span>' : ''}<span class="tiny" style="margin-left:auto">${ago(c.at)}</span></div>
-        ${c.replyTo ? `<div class="tiny">↪ replying to ${esc(nameOf(c.replyTo))}</div>` : ''}
-        <div>${esc(c.text)}</div>
-        ${poster && c.author !== u.id ? `<div><button class="linkbtn" data-action="replyTo" data-id="${c.author}">Reply</button></div>` : ''}</div>`).join('') || emptyRow('No comments yet.')}
-      ${composer}</section>` };
+    ${commentsSection(p, 'post')}` };
 }
 
 function peopleScreen() {
@@ -817,9 +846,13 @@ function renderSheet() {
         ${field('pick-note', 'Note', `<textarea id="pick-note" placeholder="Plus an hour of weeding?">${esc(s.note || '')}</textarea>`)}`,
         `<button class="btn primary block" data-action="propose">Send</button>`);
     }
-    case 'addGuide': return sheet('Share know-how', `${field('guide-title', 'Title', '<input id="guide-title" autofocus placeholder="Saving tomato seeds">')}
-      ${field('guide-topic', 'Topic', `<select id="guide-topic">${TOPICS.map(t => `<option>${t}</option>`).join('')}</select>`)}
-      ${field('guide-body', 'What you know', '<textarea id="guide-body" style="min-height:160px"></textarea>')}`, `<button class="btn primary block" data-action="addGuide">Publish</button>`);
+    case 'addGuide': return sheet('Share a free resource', `${field('guide-title', 'Title', '<input id="guide-title" autofocus placeholder="Grandma\'s bread-and-butter pickles">')}
+      ${field('guide-topic', 'Type', `<select id="guide-topic">${TOPICS.map(t => `<option>${t}</option>`).join('')}</select>`)}
+      ${field('guide-body', 'Ingredients, steps, or instructions', '<textarea id="guide-body" style="min-height:160px"></textarea>')}
+      <div class="field"><label for="guide-file">Attach a photo, drawing, or PDF</label>
+        <label class="upload" for="guide-file" style="aspect-ratio:auto;padding:16px">${s.file ? (s.file.type.startsWith('image/') ? `<img src="${s.file.data}" alt="" style="max-height:200px;object-fit:contain">` : `<span>${esc(s.file.name)}</span>`) : `<span>${icon('plus', 22)}<br>Choose a file</span>`}</label>
+        <input id="guide-file" type="file" accept="image/*,application/pdf" hidden><span class="hint">Optional. Recipe cards, plan drawings, and printed instructions all work.</span></div>
+      <div class="hint">Everything here is free for all members to read and use.</div>`, `<button class="btn primary block" data-action="addGuide">Publish</button>`);
     case 'addPost': return sheet('New post', `${field('post-title', 'Title', '<input id="post-title" autofocus>')}
       ${field('post-body', "What's on your mind?", '<textarea id="post-body" style="min-height:140px"></textarea>')}`, `<button class="btn primary block" data-action="addPost">Post</button>`);
     case 'editProfile': return sheet('Edit profile', `<div class="panel-head" style="padding:0">Shown to everyone</div>
@@ -848,7 +881,7 @@ function renderSheet() {
 }
 
 // ---------- Shell ----------
-const TABS = [['barter', 'Barter'], ['learn', 'Learn'], ['community', 'Community'], ['people', 'People'], ['inbox', 'Inbox']];
+const TABS = [['barter', 'Barter'], ['learn', 'Resources'], ['community', 'Community'], ['people', 'People'], ['inbox', 'Inbox']];
 const BRAND = `<svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="var(--moss)"/><path d="M9 22c0-7 5-12 14-12 0 8-5 13-13 13" fill="none" stroke="var(--moss-ink)" stroke-width="2" stroke-linecap="round"/><path d="M9 22c3-4 6-6 10-8" fill="none" stroke="var(--moss-ink)" stroke-width="2" stroke-linecap="round"/></svg>`;
 
 function welcome() {

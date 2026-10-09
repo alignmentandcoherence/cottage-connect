@@ -3,7 +3,7 @@ import SwiftData
 
 enum AppSection: String, CaseIterable, Identifiable {
     case barter = "Barter"
-    case learn = "Learn"
+    case learn = "Resources"
     case community = "Community"
     case people = "People"
     case inbox = "Inbox"
@@ -12,7 +12,7 @@ enum AppSection: String, CaseIterable, Identifiable {
     var icon: String {
         switch self {
         case .barter: "arrow.left.arrow.right"
-        case .learn: "book"
+        case .learn: "books.vertical"
         case .community: "bubble.left.and.bubble.right"
         case .people: "person.3"
         case .inbox: "tray"
