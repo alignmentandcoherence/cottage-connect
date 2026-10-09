@@ -201,7 +201,7 @@ struct PendingReviewView: View {
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: 420)
-                Text("Demo: sign out and sign in as Rosa (admin) to approve.")
+                Text("Demo: sign out and sign in as Clara (admin) to approve.")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Button("Sign Out") { signedIn = false }

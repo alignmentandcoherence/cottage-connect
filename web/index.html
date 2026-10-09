@@ -283,7 +283,7 @@ const CATEGORIES = { veggies: 'Veggies', fruit: 'Fruit', meat: 'Meat', dairy: 'D
 const ROLES = { practitioner: 'Practitioner', farmer: 'Farmer', both: 'Farmer & Practitioner' };
 const TOPICS = ['Recipe', 'Building plan', 'Canning & preserving', 'How-to', 'Animal care', 'Other'];
 const ACTIONS = { started: 'started a trade', asked: 'made an ask', countered: 'proposed something new', accepted: 'accepted', declined: 'declined' };
-const STORE_KEY = 'cottage-connect-demo-v2';
+const STORE_KEY = 'cottage-connect-demo-v3';
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 const hoursAgo = h => Date.now() - h * 3600e3;
@@ -292,17 +292,17 @@ function seed() {
   const m = (id, name, role, region, bio, products, skills, lat, lon, extra = {}) =>
     ({ id, name, role, region, bio, products, skills, lat, lon, status: 'approved', isAdmin: false, invitedBy: null, signIn: 'Apple', ...extra });
   const members = [
-    m('rosa', 'Rosa Alvarez', 'practitioner', 'Hudson Valley, NY', 'Small-batch cheeses and ferments. Always happy to teach.', ['Cheese', 'Sauerkraut', 'Kimchi'], ['Cheesemaking', 'Fermentation'], 41.93, -73.91, { isAdmin: true }),
-    m('eli', 'Eli Turner', 'farmer', 'Hudson Valley, NY', '40 acres with Icelandic sheep and a big hay field.', ['Lamb', 'Fleece', 'Hay'], ['Fencing', 'Shearing'], 42.10, -73.80, { invitedBy: 'rosa' }),
-    m('june', 'June Park', 'both', 'Berkshires, MA', 'Bees, hens, and a market garden. Looking for land to expand hives.', ['Honey', 'Eggs', 'Greens', 'Candles'], ['Beekeeping', 'Candle making'], 42.30, -73.25, { invitedBy: 'rosa', signIn: 'Google' }),
+    m('clara', 'Clara Alvarez', 'practitioner', 'Hudson Valley, NY', 'Small-batch cheeses and ferments. Always happy to teach.', ['Cheese', 'Sauerkraut', 'Kimchi'], ['Cheesemaking', 'Fermentation'], 41.93, -73.91, { isAdmin: true }),
+    m('eli', 'Eli Turner', 'farmer', 'Hudson Valley, NY', '40 acres with Icelandic sheep and a big hay field.', ['Lamb', 'Fleece', 'Hay'], ['Fencing', 'Shearing'], 42.10, -73.80, { invitedBy: 'clara' }),
+    m('june', 'June Park', 'both', 'Berkshires, MA', 'Bees, hens, and a market garden. Looking for land to expand hives.', ['Honey', 'Eggs', 'Greens', 'Candles'], ['Beekeeping', 'Candle making'], 42.30, -73.25, { invitedBy: 'clara', signIn: 'Google' }),
     m('sam', 'Sam Okafor', 'practitioner', 'Catskills, NY', 'Woodworker. Builds coops, sheds and raised beds.', ['Firewood', 'Cedar offcuts'], ['Woodworking', 'Timber framing'], 42.08, -74.30, { invitedBy: 'eli', signIn: 'Phone' }),
     m('maya', 'Maya Chen', 'farmer', 'Litchfield, CT', 'Goat dairy, just getting started.', ['Goat milk'], ['Milking'], 41.75, -73.19, { status: 'pending', invitedBy: 'june', signIn: 'Phone' }),
   ];
   const it = (id, owner, title, category, quantity, details, h) => ({ id, owner, title, category, quantity, details, available: true, created: hoursAgo(h) });
   const items = [
-    it('cheddar', 'rosa', 'Aged cheddar', 'dairy', '1 lb wheel', 'Six months aged, cloth bound.', 20),
-    it('kraut', 'rosa', 'Sauerkraut', 'veggies', '2 quarts', '', 30),
-    it('cheeseclass', 'rosa', 'Cheesemaking lesson', 'timeSkill', '2 hours', 'At my kitchen or yours. Fresh mozzarella or chèvre.', 40),
+    it('cheddar', 'clara', 'Aged cheddar', 'dairy', '1 lb wheel', 'Six months aged, cloth bound.', 20),
+    it('kraut', 'clara', 'Sauerkraut', 'veggies', '2 quarts', '', 30),
+    it('cheeseclass', 'clara', 'Cheesemaking lesson', 'timeSkill', '2 hours', 'At my kitchen or yours. Fresh mozzarella or chèvre.', 40),
     it('lamb', 'eli', 'Lamb, half share', 'meat', 'About 20 lbs', 'Pasture raised, butchered in November.', 10),
     it('fleece', 'eli', 'Raw fleece', 'other', '12 lbs, skirted', '', 50),
     it('fencing', 'eli', 'Fence repair help', 'timeSkill', 'Half a day', '', 60),
@@ -316,7 +316,7 @@ function seed() {
     members, items,
     trades: [
       { id: 't1', item: 'lamb', requester: 'june', owner: 'eli', status: 'awaitingRequester', offered: ['honey', 'eggs'], updated: hoursAgo(3) },
-      { id: 't2', item: 'cheddar', requester: 'sam', owner: 'rosa', status: 'awaitingOwner', offered: [], updated: hoursAgo(1) },
+      { id: 't2', item: 'cheddar', requester: 'sam', owner: 'clara', status: 'awaitingOwner', offered: [], updated: hoursAgo(1) },
     ],
     events: [
       { trade: 't1', actor: 'june', action: 'started', items: [], note: 'Would love a half share for the winter!', at: hoursAgo(6) },
@@ -324,11 +324,11 @@ function seed() {
       { trade: 't2', actor: 'sam', action: 'started', items: [], note: "That cheddar looks amazing. Take a look at what I've got.", at: hoursAgo(1) },
     ],
     guides: [
-      { id: 'g1', author: 'rosa', title: 'Starting a sauerkraut crock', topic: 'Canning & preserving', body: 'Shred 5 lbs of cabbage and mix in 3 tbsp of salt. Massage until it releases liquid, then pack tightly into a crock so the brine covers it. Weigh it down, cover with a cloth, and taste after a week. Keep it cool, around 65°F, for the best texture.', at: hoursAgo(120) },
+      { id: 'g1', author: 'clara', title: 'Starting a sauerkraut crock', topic: 'Canning & preserving', body: 'Shred 5 lbs of cabbage and mix in 3 tbsp of salt. Massage until it releases liquid, then pack tightly into a crock so the brine covers it. Weigh it down, cover with a cloth, and taste after a week. Keep it cool, around 65°F, for the best texture.', at: hoursAgo(120) },
       { id: 'g2', author: 'eli', title: 'Lambing season checklist', topic: 'Animal care', body: "Clean jugs with fresh bedding, iodine for navels, colostrum on hand, a heat lamp with a safe mount, and the vet's number on the barn door. Check ewes every few hours once bags fill.", at: hoursAgo(150) },
       { id: 'g3', author: 'june', title: 'Overwintering bees in the Northeast', topic: 'Animal care', body: 'Leave at least 60 lbs of honey per hive. Add a moisture quilt, reduce entrances, and wrap hives on the windward side. Heft from behind in January to check stores.', at: hoursAgo(80) },
       { id: 'g4', author: 'sam', title: 'Splitting and seasoning firewood', topic: 'How-to', body: 'Split green, stack bark-up in single rows off the ground, and cover only the top. Oak needs a full year; maple and ash are ready in six to nine months.', at: hoursAgo(60) },
-      { id: 'g5', author: 'rosa', title: 'Fresh mozzarella in 30 minutes', topic: 'Recipe', body: 'Ingredients: 1 gallon whole milk (not ultra-pasteurized), 1½ tsp citric acid in ¼ cup water, ¼ tsp liquid rennet in ¼ cup water, 1 tsp salt.\n\n1. Stir the citric acid into cold milk, then heat to 90°F.\n2. Off the heat, stir in the rennet for 30 seconds. Rest 5 minutes until it sets.\n3. Cut the curd into 1-inch cubes and heat to 105°F, stirring gently.\n4. Ladle curds into a bowl and drain the whey.\n5. Microwave 30 seconds at a time, folding and stretching until glossy. Salt and shape.', at: hoursAgo(20), files: [] },
+      { id: 'g5', author: 'clara', title: 'Fresh mozzarella in 30 minutes', topic: 'Recipe', body: 'Ingredients: 1 gallon whole milk (not ultra-pasteurized), 1½ tsp citric acid in ¼ cup water, ¼ tsp liquid rennet in ¼ cup water, 1 tsp salt.\n\n1. Stir the citric acid into cold milk, then heat to 90°F.\n2. Off the heat, stir in the rennet for 30 seconds. Rest 5 minutes until it sets.\n3. Cut the curd into 1-inch cubes and heat to 105°F, stirring gently.\n4. Ladle curds into a bowl and drain the whey.\n5. Microwave 30 seconds at a time, folding and stretching until glossy. Salt and shape.', at: hoursAgo(20), files: [] },
       { id: 'g6', author: 'sam', title: '4x8 cedar raised bed plan', topic: 'Building plan', body: 'Cut list: four 8 ft and four 4 ft cedar 2x10s, six 20 in. 4x4 posts, 3 in. exterior screws.\n\n1. Screw the 4 ft boards to the corner posts to make two end frames.\n2. Stand the ends 8 ft apart and attach the long boards, adding a middle post on each long side to stop bowing.\n3. Level on site, line the bottom with cardboard, and fill with a 60/40 topsoil and compost mix.', at: hoursAgo(9), files: [{ name: 'raised-bed-plan.svg', type: 'image/svg+xml', data: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgMzYwIiBmb250LWZhbWlseT0iSGVsdmV0aWNhLCBBcmlhbCwgc2Fucy1zZXJpZiI+PHJlY3Qgd2lkdGg9IjY0MCIgaGVpZ2h0PSIzNjAiIGZpbGw9IiNmNmYxZTQiLz48ZyBzdHJva2U9IiNjOWJmYTYiIHN0cm9rZS13aWR0aD0iMSI+PGxpbmUgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjM2MCIvPjxsaW5lIHgxPSIyMCIgeTE9IjAiIHgyPSIyMCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI0MCIgeTE9IjAiIHgyPSI0MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI2MCIgeTE9IjAiIHgyPSI2MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI4MCIgeTE9IjAiIHgyPSI4MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSIxMDAiIHkxPSIwIiB4Mj0iMTAwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjEyMCIgeTE9IjAiIHgyPSIxMjAiIHkyPSIzNjAiLz48bGluZSB4MT0iMTQwIiB5MT0iMCIgeDI9IjE0MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSIxNjAiIHkxPSIwIiB4Mj0iMTYwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjE4MCIgeTE9IjAiIHgyPSIxODAiIHkyPSIzNjAiLz48bGluZSB4MT0iMjAwIiB5MT0iMCIgeDI9IjIwMCIgeTI9IjM2MCIvPjxsaW5lIHgxPSIyMjAiIHkxPSIwIiB4Mj0iMjIwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjI0MCIgeTE9IjAiIHgyPSIyNDAiIHkyPSIzNjAiLz48bGluZSB4MT0iMjYwIiB5MT0iMCIgeDI9IjI2MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSIyODAiIHkxPSIwIiB4Mj0iMjgwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjMwMCIgeTE9IjAiIHgyPSIzMDAiIHkyPSIzNjAiLz48bGluZSB4MT0iMzIwIiB5MT0iMCIgeDI9IjMyMCIgeTI9IjM2MCIvPjxsaW5lIHgxPSIzNDAiIHkxPSIwIiB4Mj0iMzQwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjM2MCIgeTE9IjAiIHgyPSIzNjAiIHkyPSIzNjAiLz48bGluZSB4MT0iMzgwIiB5MT0iMCIgeDI9IjM4MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI0MDAiIHkxPSIwIiB4Mj0iNDAwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjQyMCIgeTE9IjAiIHgyPSI0MjAiIHkyPSIzNjAiLz48bGluZSB4MT0iNDQwIiB5MT0iMCIgeDI9IjQ0MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI0NjAiIHkxPSIwIiB4Mj0iNDYwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjQ4MCIgeTE9IjAiIHgyPSI0ODAiIHkyPSIzNjAiLz48bGluZSB4MT0iNTAwIiB5MT0iMCIgeDI9IjUwMCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI1MjAiIHkxPSIwIiB4Mj0iNTIwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjU0MCIgeTE9IjAiIHgyPSI1NDAiIHkyPSIzNjAiLz48bGluZSB4MT0iNTYwIiB5MT0iMCIgeDI9IjU2MCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI1ODAiIHkxPSIwIiB4Mj0iNTgwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjYwMCIgeTE9IjAiIHgyPSI2MDAiIHkyPSIzNjAiLz48bGluZSB4MT0iNjIwIiB5MT0iMCIgeDI9IjYyMCIgeTI9IjM2MCIvPjxsaW5lIHgxPSI2NDAiIHkxPSIwIiB4Mj0iNjQwIiB5Mj0iMzYwIi8+PGxpbmUgeDE9IjAiIHkxPSIwIiB4Mj0iNjQwIiB5Mj0iMCIvPjxsaW5lIHgxPSIwIiB5MT0iMjAiIHgyPSI2NDAiIHkyPSIyMCIvPjxsaW5lIHgxPSIwIiB5MT0iNDAiIHgyPSI2NDAiIHkyPSI0MCIvPjxsaW5lIHgxPSIwIiB5MT0iNjAiIHgyPSI2NDAiIHkyPSI2MCIvPjxsaW5lIHgxPSIwIiB5MT0iODAiIHgyPSI2NDAiIHkyPSI4MCIvPjxsaW5lIHgxPSIwIiB5MT0iMTAwIiB4Mj0iNjQwIiB5Mj0iMTAwIi8+PGxpbmUgeDE9IjAiIHkxPSIxMjAiIHgyPSI2NDAiIHkyPSIxMjAiLz48bGluZSB4MT0iMCIgeTE9IjE0MCIgeDI9IjY0MCIgeTI9IjE0MCIvPjxsaW5lIHgxPSIwIiB5MT0iMTYwIiB4Mj0iNjQwIiB5Mj0iMTYwIi8+PGxpbmUgeDE9IjAiIHkxPSIxODAiIHgyPSI2NDAiIHkyPSIxODAiLz48bGluZSB4MT0iMCIgeTE9IjIwMCIgeDI9IjY0MCIgeTI9IjIwMCIvPjxsaW5lIHgxPSIwIiB5MT0iMjIwIiB4Mj0iNjQwIiB5Mj0iMjIwIi8+PGxpbmUgeDE9IjAiIHkxPSIyNDAiIHgyPSI2NDAiIHkyPSIyNDAiLz48bGluZSB4MT0iMCIgeTE9IjI2MCIgeDI9IjY0MCIgeTI9IjI2MCIvPjxsaW5lIHgxPSIwIiB5MT0iMjgwIiB4Mj0iNjQwIiB5Mj0iMjgwIi8+PGxpbmUgeDE9IjAiIHkxPSIzMDAiIHgyPSI2NDAiIHkyPSIzMDAiLz48bGluZSB4MT0iMCIgeTE9IjMyMCIgeDI9IjY0MCIgeTI9IjMyMCIvPjxsaW5lIHgxPSIwIiB5MT0iMzQwIiB4Mj0iNjQwIiB5Mj0iMzQwIi8+PGxpbmUgeDE9IjAiIHkxPSIzNjAiIHgyPSI2NDAiIHkyPSIzNjAiLz48L2c+PHJlY3QgeD0iODAiIHk9IjgwIiB3aWR0aD0iNDgwIiBoZWlnaHQ9IjE2MCIgZmlsbD0iI2U3ZDNhZSIgc3Ryb2tlPSIjNmI0YTJiIiBzdHJva2Utd2lkdGg9IjEwIi8+PHJlY3QgeD0iNzQiIHk9Ijc0IiB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIGZpbGw9IiM2YjRhMmIiLz48cmVjdCB4PSI1NDQiIHk9Ijc0IiB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIGZpbGw9IiM2YjRhMmIiLz48cmVjdCB4PSI3NCIgeT0iMjI0IiB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIGZpbGw9IiM2YjRhMmIiLz48cmVjdCB4PSI1NDQiIHk9IjIyNCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjIyIiBmaWxsPSIjNmI0YTJiIi8+PHJlY3QgeD0iMzEwIiB5PSI3NCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIyIiBmaWxsPSIjNmI0YTJiIi8+PHJlY3QgeD0iMzEwIiB5PSIyMjQiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMiIgZmlsbD0iIzZiNGEyYiIvPjxnIHN0cm9rZT0iIzJmNWE4YSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSIjMmY1YThhIj48bGluZSB4MT0iODAiIHkxPSIyODAiIHgyPSI1NjAiIHkyPSIyODAiLz48bGluZSB4MT0iODAiIHkxPSIyNzIiIHgyPSI4MCIgeTI9IjI4OCIvPjxsaW5lIHgxPSI1NjAiIHkxPSIyNzIiIHgyPSI1NjAiIHkyPSIyODgiLz48bGluZSB4MT0iNjAwIiB5MT0iODAiIHgyPSI2MDAiIHkyPSIyNDAiLz48bGluZSB4MT0iNTkyIiB5MT0iODAiIHgyPSI2MDgiIHkyPSI4MCIvPjxsaW5lIHgxPSI1OTIiIHkxPSIyNDAiIHgyPSI2MDgiIHkyPSIyNDAiLz48L2c+PHRleHQgeD0iMzIwIiB5PSIzMDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiMyZjVhOGEiPjggZnQgKHR3byAyeDEwIGNlZGFyIGJvYXJkcyBwZXIgc2lkZSk8L3RleHQ+PHRleHQgeD0iNjEyIiB5PSIxNjUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiMyZjVhOGEiIHRyYW5zZm9ybT0icm90YXRlKDkwIDYxMiAxNjUpIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj40IGZ0PC90ZXh0Pjx0ZXh0IHg9IjMyMCIgeT0iMTY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjNmI0YTJiIj40eDQgcG9zdHMgYXQgY29ybmVycyArIG1pZGRsZTwvdGV4dD48dGV4dCB4PSIzMjAiIHk9IjQ0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzNhM2EyYSI+UkFJU0VEIEJFRCwgNCB4IDggeCAyMCBpbi4gKFRPUCBWSUVXKTwvdGV4dD48L3N2Zz4=' }] },
       { id: 'g7', author: 'june', title: 'Water-bath canning, step by step', topic: 'Canning & preserving', body: 'Use only tested recipes for high-acid foods: fruit, jams, pickles, and acidified tomatoes.\n\n1. Wash jars and keep them hot. New lids only.\n2. Fill hot jars, leaving the headspace the recipe calls for. Wipe rims.\n3. Lower jars into boiling water covering them by 1 inch. Start the timer once it returns to a boil.\n4. Process for the recipe time, adding time for altitude.\n5. Let jars sit in the pot 5 minutes, then cool 12 to 24 hours. Check every lid has sealed.', at: hoursAgo(40), files: [] },
     ],
@@ -339,22 +339,22 @@ function seed() {
     comments: [
       { id: 'c1', post: 'p1', author: 'sam', replyTo: null, text: 'Is there a table for tools too?', at: hoursAgo(28) },
       { id: 'c2', post: 'p1', author: 'june', replyTo: 'sam', text: 'Yes, bring them along!', at: hoursAgo(27) },
-      { id: 'c3', post: 'p2', author: 'rosa', replyTo: null, text: "My neighbor has one. I'll ask!", at: hoursAgo(10) },
-      { id: 'c4', post: 'g6', author: 'rosa', replyTo: null, text: 'Built this last spring. Doubling the middle posts kept the sides perfectly straight.', at: hoursAgo(6) },
+      { id: 'c3', post: 'p2', author: 'clara', replyTo: null, text: "My neighbor has one. I'll ask!", at: hoursAgo(10) },
+      { id: 'c4', post: 'g6', author: 'clara', replyTo: null, text: 'Built this last spring. Doubling the middle posts kept the sides perfectly straight.', at: hoursAgo(6) },
       { id: 'c5', post: 'g5', author: 'june', replyTo: null, text: 'Does this work with raw goat milk?', at: hoursAgo(8) },
-      { id: 'c6', post: 'g5', author: 'rosa', replyTo: 'june', text: 'Yes, but the curd is softer. Add a pinch of calcium chloride.', at: hoursAgo(7) },
+      { id: 'c6', post: 'g5', author: 'clara', replyTo: 'june', text: 'Yes, but the curd is softer. Add a pinch of calcium chloride.', at: hoursAgo(7) },
     ],
     requests: [
-      { from: 'rosa', to: 'june', at: hoursAgo(90) }, { from: 'june', to: 'rosa', at: hoursAgo(89) },
-      { from: 'eli', to: 'rosa', at: hoursAgo(2) },
+      { from: 'clara', to: 'june', at: hoursAgo(90) }, { from: 'june', to: 'clara', at: hoursAgo(89) },
+      { from: 'eli', to: 'clara', at: hoursAgo(2) },
     ],
     messages: [
-      { from: 'june', to: 'rosa', text: 'Do you still have rennet to spare?', at: hoursAgo(48) },
-      { from: 'rosa', to: 'june', text: 'Yes! Swing by Saturday.', at: hoursAgo(47) },
+      { from: 'june', to: 'clara', text: 'Do you still have rennet to spare?', at: hoursAgo(48) },
+      { from: 'clara', to: 'june', text: 'Yes! Swing by Saturday.', at: hoursAgo(47) },
     ],
     invites: [
       { code: 'GOAT42', by: 'june', usedBy: 'maya', at: hoursAgo(5) },
-      { code: 'HARVEST', by: 'rosa', usedBy: null, at: hoursAgo(1) },
+      { code: 'HARVEST', by: 'clara', usedBy: null, at: hoursAgo(1) },
     ],
   };
 }
@@ -968,7 +968,7 @@ function pendingScreen(u) {
   return `<div class="welcome"><div class="welcome-card">${BRAND.replace(/width="30" height="30"/, 'width="64" height="64"')}
     ${u.status === 'declined' ? `<h1>Your request wasn't approved</h1>` : `<h1>Thanks for joining, ${esc(u.name.split(' ')[0])}!</h1>
     <p class="sub">${esc(nameOf(u.invitedBy))} invited you. An admin is reviewing your profile, and you'll be able to barter and post once you're approved.</p>
-    <div class="note">${icon('clock')}<span>Demo: sign out and sign in as Rosa (admin) to approve yourself from her Inbox.</span></div>`}
+    <div class="note">${icon('clock')}<span>Demo: sign out and sign in as Clara (admin) to approve yourself from her Inbox.</span></div>`}
     <button class="btn" data-action="signOut">Sign out</button></div></div>`;
 }
 

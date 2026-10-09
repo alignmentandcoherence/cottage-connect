@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 /// Seeds a small community on first launch so the demo has something to show.
-/// The first member (Rosa) is the default signed-in user and has a trade and a
+/// The first member (Clara) is the default signed-in user and has a trade and a
 /// connection request waiting for her.
 enum SampleData {
     static func seedIfNeeded(_ context: ModelContext) {
@@ -11,37 +11,37 @@ enum SampleData {
 
         func ago(_ hours: Double) -> Date { Date.now.addingTimeInterval(-hours * 3600) }
 
-        let rosa = Member(name: "Rosa Alvarez", role: .practitioner, region: "Hudson Valley, NY",
+        let clara = Member(name: "Clara Alvarez", role: .practitioner, region: "Hudson Valley, NY",
                           bio: "Small-batch cheeses and ferments. Always happy to teach.",
                           products: ["Cheese", "Sauerkraut", "Kimchi"], skills: ["Cheesemaking", "Fermentation"],
                           joinedAt: ago(400), latitude: 41.93, longitude: -73.91, isAdmin: true)
         let eli = Member(name: "Eli Turner", role: .farmer, region: "Hudson Valley, NY",
                          bio: "40 acres with Icelandic sheep and a big hay field.",
                          products: ["Lamb", "Fleece", "Hay"], skills: ["Fencing", "Shearing"],
-                         joinedAt: ago(300), latitude: 42.10, longitude: -73.80, invitedByID: rosa.uid)
+                         joinedAt: ago(300), latitude: 42.10, longitude: -73.80, invitedByID: clara.uid)
         let june = Member(name: "June Park", role: .both, region: "Berkshires, MA",
                           bio: "Bees, hens, and a market garden. Looking for land to expand hives.",
                           products: ["Honey", "Eggs", "Greens", "Candles"], skills: ["Beekeeping", "Candle making"],
-                          joinedAt: ago(200), latitude: 42.30, longitude: -73.25, invitedByID: rosa.uid, signInMethod: "Google")
+                          joinedAt: ago(200), latitude: 42.30, longitude: -73.25, invitedByID: clara.uid, signInMethod: "Google")
         let sam = Member(name: "Sam Okafor", role: .practitioner, region: "Catskills, NY",
                          bio: "Woodworker. Builds coops, sheds and raised beds.",
                          products: ["Firewood", "Cedar offcuts"], skills: ["Woodworking", "Timber framing"],
                          joinedAt: ago(100), latitude: 42.08, longitude: -74.30, invitedByID: eli.uid, signInMethod: "Phone")
-        // Waiting on an admin (Rosa) to review.
+        // Waiting on an admin (Clara) to review.
         let maya = Member(name: "Maya Chen", role: .farmer, region: "Litchfield, CT",
                           bio: "Goat dairy, just getting started.", products: ["Goat milk"], skills: ["Milking"],
                           joinedAt: ago(4), latitude: 41.75, longitude: -73.19, status: .pending,
                           invitedByID: june.uid, signInMethod: "Phone")
-        [rosa, eli, june, sam, maya].forEach { context.insert($0) }
+        [clara, eli, june, sam, maya].forEach { context.insert($0) }
         let mayaInvite = Invite(createdByID: june.uid, code: "GOAT42", createdAt: ago(5))
         mayaInvite.usedByID = maya.uid
         context.insert(mayaInvite)
-        context.insert(Invite(createdByID: rosa.uid, code: "HARVEST", createdAt: ago(1)))
+        context.insert(Invite(createdByID: clara.uid, code: "HARVEST", createdAt: ago(1)))
 
-        let cheddar = SpareItem(ownerID: rosa.uid, title: "Aged cheddar", category: .dairy, quantity: "1 lb wheel",
+        let cheddar = SpareItem(ownerID: clara.uid, title: "Aged cheddar", category: .dairy, quantity: "1 lb wheel",
                                 details: "Six months aged, cloth bound.", imageName: "item-cheddar", createdAt: ago(20))
-        let kraut = SpareItem(ownerID: rosa.uid, title: "Sauerkraut", category: .veggies, quantity: "2 quarts", imageName: "item-kraut", createdAt: ago(30))
-        let cheeseClass = SpareItem(ownerID: rosa.uid, title: "Cheesemaking lesson", category: .timeSkill, quantity: "2 hours",
+        let kraut = SpareItem(ownerID: clara.uid, title: "Sauerkraut", category: .veggies, quantity: "2 quarts", imageName: "item-kraut", createdAt: ago(30))
+        let cheeseClass = SpareItem(ownerID: clara.uid, title: "Cheesemaking lesson", category: .timeSkill, quantity: "2 hours",
                                     details: "At my kitchen or yours. Fresh mozzarella or chèvre.", imageName: "item-lesson", createdAt: ago(40))
         let lamb = SpareItem(ownerID: eli.uid, title: "Lamb, half share", category: .meat, quantity: "About 20 lbs",
                              details: "Pasture raised, butchered in November.", imageName: "item-lamb", createdAt: ago(10))
@@ -69,21 +69,21 @@ enum SampleData {
         context.insert(TradeEvent(tradeID: lambTrade.uid, actorID: eli.uid, action: .asked,
                                   itemIDs: [honey.uid, eggs.uid], note: "Honey and eggs through the winter?", date: ago(3)))
 
-        // Sam wants Rosa's cheddar; waiting on Rosa to pick from Sam's items.
-        let cheeseTrade = Trade(itemID: cheddar.uid, requesterID: sam.uid, ownerID: rosa.uid, createdAt: ago(1))
+        // Sam wants Clara's cheddar; waiting on Clara to pick from Sam's items.
+        let cheeseTrade = Trade(itemID: cheddar.uid, requesterID: sam.uid, ownerID: clara.uid, createdAt: ago(1))
         context.insert(cheeseTrade)
         context.insert(TradeEvent(tradeID: cheeseTrade.uid, actorID: sam.uid, action: .started,
                                   note: "That cheddar looks amazing. Take a look at what I've got.", date: ago(1)))
 
-        // Rosa and June are connected and chatting; Eli has asked to connect with Rosa.
-        context.insert(ConnectionRequest(fromID: rosa.uid, toID: june.uid, createdAt: ago(90)))
-        context.insert(ConnectionRequest(fromID: june.uid, toID: rosa.uid, createdAt: ago(89)))
-        context.insert(ConnectionRequest(fromID: eli.uid, toID: rosa.uid, createdAt: ago(2)))
-        context.insert(DirectMessage(fromID: june.uid, toID: rosa.uid, text: "Do you still have rennet to spare?", createdAt: ago(48)))
-        context.insert(DirectMessage(fromID: rosa.uid, toID: june.uid, text: "Yes! Swing by Saturday.", createdAt: ago(47)))
+        // Clara and June are connected and chatting; Eli has asked to connect with Clara.
+        context.insert(ConnectionRequest(fromID: clara.uid, toID: june.uid, createdAt: ago(90)))
+        context.insert(ConnectionRequest(fromID: june.uid, toID: clara.uid, createdAt: ago(89)))
+        context.insert(ConnectionRequest(fromID: eli.uid, toID: clara.uid, createdAt: ago(2)))
+        context.insert(DirectMessage(fromID: june.uid, toID: clara.uid, text: "Do you still have rennet to spare?", createdAt: ago(48)))
+        context.insert(DirectMessage(fromID: clara.uid, toID: june.uid, text: "Yes! Swing by Saturday.", createdAt: ago(47)))
 
         [
-            Guide(authorID: rosa.uid, title: "Starting a sauerkraut crock", topic: .preserving,
+            Guide(authorID: clara.uid, title: "Starting a sauerkraut crock", topic: .preserving,
                   body: "Shred 5 lbs of cabbage and mix in 3 tbsp of salt. Massage until it releases liquid, then pack tightly into a crock so the brine covers it. Weigh it down, cover with a cloth, and taste after a week. Keep it cool, around 65°F, for the best texture.",
                   createdAt: ago(120)),
             Guide(authorID: eli.uid, title: "Lambing season checklist", topic: .animals,
@@ -97,7 +97,7 @@ enum SampleData {
                   createdAt: ago(60)),
         ].forEach { context.insert($0) }
 
-        let mozzarella = Guide(authorID: rosa.uid, title: "Fresh mozzarella in 30 minutes", topic: .recipe,
+        let mozzarella = Guide(authorID: clara.uid, title: "Fresh mozzarella in 30 minutes", topic: .recipe,
               body: "Ingredients: 1 gallon whole milk (not ultra-pasteurized), 1½ tsp citric acid in ¼ cup water, ¼ tsp liquid rennet in ¼ cup water, 1 tsp salt.\n\n1. Stir the citric acid into cold milk, then heat to 90°F.\n2. Off the heat, stir in the rennet for 30 seconds. Rest 5 minutes until it sets.\n3. Cut the curd into 1-inch cubes and heat to 105°F, stirring gently.\n4. Ladle curds into a bowl and drain the whey.\n5. Microwave 30 seconds at a time, folding and stretching until glossy. Salt and shape.",
               createdAt: ago(20))
         let bedPlan = Guide(authorID: sam.uid, title: "4x8 cedar raised bed plan", topic: .buildingPlan,
@@ -107,10 +107,10 @@ enum SampleData {
               body: "Use only tested recipes for high-acid foods: fruit, jams, pickles, and acidified tomatoes.\n\n1. Wash jars and keep them hot. New lids only.\n2. Fill hot jars, leaving the headspace the recipe calls for. Wipe rims.\n3. Lower jars into boiling water covering them by 1 inch. Start the timer once it returns to a boil.\n4. Process for the recipe time, adding time for altitude.\n5. Let jars sit in the pot 5 minutes, then cool 12 to 24 hours. Check every lid has sealed.",
               createdAt: ago(40))
         [mozzarella, bedPlan, canning].forEach { context.insert($0) }
-        context.insert(Comment(postID: bedPlan.uid, authorID: rosa.uid,
+        context.insert(Comment(postID: bedPlan.uid, authorID: clara.uid,
                                text: "Built this last spring. Doubling the middle posts kept the sides perfectly straight.", createdAt: ago(6)))
         context.insert(Comment(postID: mozzarella.uid, authorID: june.uid, text: "Does this work with raw goat milk?", createdAt: ago(8)))
-        context.insert(Comment(postID: mozzarella.uid, authorID: rosa.uid, text: "Yes, but the curd is softer. Add a pinch of calcium chloride.",
+        context.insert(Comment(postID: mozzarella.uid, authorID: clara.uid, text: "Yes, but the curd is softer. Add a pinch of calcium chloride.",
                                replyToAuthorID: june.uid, createdAt: ago(7)))
 
         let swap = Post(authorID: june.uid, title: "Seed swap at the grange, Oct 20",
@@ -121,6 +121,6 @@ enum SampleData {
         context.insert(Comment(postID: swap.uid, authorID: sam.uid, text: "Is there a table for tools too?", createdAt: ago(28)))
         context.insert(Comment(postID: swap.uid, authorID: june.uid, text: "Yes, bring them along!",
                                replyToAuthorID: sam.uid, createdAt: ago(27)))
-        context.insert(Comment(postID: press.uid, authorID: rosa.uid, text: "My neighbor has one. I'll ask!", createdAt: ago(10)))
+        context.insert(Comment(postID: press.uid, authorID: clara.uid, text: "My neighbor has one. I'll ask!", createdAt: ago(10)))
     }
 }
