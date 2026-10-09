@@ -44,4 +44,16 @@ Data lives on the device (SwiftData), so it's one shared demo community per devi
 - An AI reviewer agent to assist admins with membership review.
 
 ## Credits
-Item pictures are from [Fluent Emoji](https://github.com/microsoft/fluentui-emoji) by Microsoft, MIT license. In the browser version, members can also add their own photo when listing an item.
+Item photos are from the [USDA Agricultural Research Service Image Gallery](https://www.ars.usda.gov/oc/images/), which are public domain. Each one shows a blurred [BlurHash](https://blurha.sh) placeholder while it loads.
+
+- Vegetables: [Fresh beets and leafy greens](https://www.ars.usda.gov/oc/images/photos/featuredphoto/aug20/produce/). Photo by Peggy Greb, USDA-ARS (public domain).
+- Eggs: [Backlit eggs being candled](https://www.ars.usda.gov/oc/images/photos/featuredphoto/sep19/eggs/). Photo by Steve Ausmus, USDA-ARS (public domain).
+- Honey: [Technician working a frame of honeycomb](https://www.ars.usda.gov/oc/images/photos/may15/d3413-1/). Photo by Vanessa Corby-Harris, USDA-ARS (public domain).
+- Dairy: [Dairy cows at the fence](https://www.ars.usda.gov/oc/images/photos/featuredphoto/jun19/dairycows/). Photo by Keith Weller, USDA-ARS (public domain).
+- Meat: [Sheep grazing in a mountain meadow](https://www.ars.usda.gov/oc/images/photos/k5629-2). Photo by Scott Bauer, USDA-ARS (public domain).
+- Seeds: [Dry bean seed varieties spilling from a seed packet](https://www.ars.usda.gov/oc/images/photos/featuredphoto/mar24/drybeans/). Photo by Steve Ausmus, USDA-ARS (public domain).
+- Tools: [Tractor cultivating rows](https://www.ars.usda.gov/oc/images/photos/k5197-3). Photo by Keith Weller, USDA-ARS (public domain).
+- Fruit: [Baskets of strawberries, blackberries and blueberries](https://www.ars.usda.gov/oc/images/photos/k7229-19). Photo by Scott Bauer, USDA-ARS (public domain).
+- Garden: [Broccoli and greens growing in a vegetable plot](https://www.ars.usda.gov/oc/images/photos/sep17/d3832-1/). Photo by USDA-ARS U.S. Vegetable Laboratory (public domain).
+
+Firewood and canning had no gallery photo, so they use illustrations from [Fluent Emoji](https://github.com/microsoft/fluentui-emoji) by Microsoft, MIT license. In the browser version, members can also add their own photo when listing an item.

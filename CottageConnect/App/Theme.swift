@@ -63,18 +63,23 @@ struct ItemRow: View {
     }
 }
 
-/// The listing's picture on a soft moss tile.
+/// The listing's USDA photo, or its illustration on a soft moss tile.
 struct ItemImage: View {
     let item: SpareItem
     var padding: CGFloat = 6
 
     var body: some View {
-        Image(item.imageName)
-            .resizable()
-            .scaledToFit()
-            .padding(padding)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Theme.moss.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
+        if let photo = Photo.forItem(item) {
+            PhotoView(photo: photo)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+        } else {
+            Image(item.imageName)
+                .resizable()
+                .scaledToFit()
+                .padding(padding)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Theme.moss.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
+        }
     }
 }
 

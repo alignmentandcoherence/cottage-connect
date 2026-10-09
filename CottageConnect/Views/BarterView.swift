@@ -95,6 +95,10 @@ struct ItemDetailView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     ItemImage(item: item, padding: 24)
                         .frame(height: 200)
+                    if let photo = Photo.forItem(item), let url = URL(string: photo.source) {
+                        Link(photo.credit, destination: url)
+                            .font(.caption2).foregroundStyle(.secondary)
+                    }
                     Label(item.category.rawValue, systemImage: item.category.icon)
                         .font(.subheadline).foregroundStyle(Theme.moss)
                     Text(item.title).font(.title2.bold())
