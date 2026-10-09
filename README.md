@@ -24,12 +24,12 @@ Choose **My Mac** or an iPhone simulator and press Run. To run on your own iPhon
 4. **Barter** lists everyone's spare items with approximate distance. Open one and tap **Start a Trade**.
 5. **People** has a List/Map toggle and a radius slider. Profiles show limited info (state, distance, products, spare items) until both people request to connect. Eli has asked to connect with Rosa: tap **Connect Back** in the Inbox, then Message.
 6. **Community**: Rosa already commented on Eli's cider press post, so she's locked until Eli replies to her. Switch to Eli, tap Reply on her comment, then switch back.
-7. **Learn** holds how-to guides. Tap Share Know-How to add one.
+7. **Resources** is a free library of recipes, building plans, canning instructions and how-tos, with attachments. Rosa already commented on Sam's raised bed plan, so she's locked until Sam replies.
 8. **Invites and review.** Sign out, tap Join with an invite code, enter `HARVEST`, and fill in a profile. The new member waits for review. Sign in as Rosa to approve them (and Maya, who's already waiting) from the Inbox.
 
 ## What's in v1
 - Barter: spare items in categories (veggies, fruit, meat, dairy, eggs, wood, time + skill), trade flow with ask, accept, decline and counteroffer, and full history.
-- Learn: information sharing through member-written guides.
+- Free Resources: recipes, building plans, canning instructions and how-tos anyone can read, with photo or drawing attachments and the same one-comment rule.
 - Community board: one comment per post per member until the poster replies to them.
 - Connections: both members must request to connect before full profiles and direct messages unlock.
 - Map with approximate locations (snapped to a ~3 mile grid) and an adjustable radius.
