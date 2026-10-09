@@ -8,6 +8,7 @@ targets:
   CottageConnect:
     type: application
     supportedDestinations: [iOS, macOS]
+    scheme: {}
     sources: [CottageConnect]
     settings:
       base:
