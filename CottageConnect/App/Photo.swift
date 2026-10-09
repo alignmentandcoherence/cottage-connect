@@ -1,7 +1,7 @@
 import SwiftUI
 import CoreGraphics
 
-/// A public-domain photo from the USDA ARS Image Gallery, with its BlurHash placeholder.
+/// A CC0 or public-domain photo (USDA ARS Image Gallery or Openverse), with its BlurHash placeholder.
 struct Photo {
     let asset: String
     let blurHash: String
@@ -10,41 +10,66 @@ struct Photo {
     let source: String
 
     static let gallery: [String: Photo] = [
-        "dairy": Photo(asset: "photo-dairy", blurHash: "LuDTI,xaofWC.Aj@ofa~gPR+t6kC", alt: "Dairy cows at the fence",
-                     credit: "Photo by Keith Weller, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/featuredphoto/jun19/dairycows/"),
         "vegetables": Photo(asset: "photo-vegetables", blurHash: "LFDSgJ,0YYRUQ1EQx=kVtea5=_x?", alt: "Fresh beets and leafy greens",
                      credit: "Photo by Peggy Greb, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/featuredphoto/aug20/produce/"),
-        "meat": Photo(asset: "photo-meat", blurHash: "LCCs.~%K9HM{8zs:RkRj01RS%1jc", alt: "Sheep grazing in a mountain meadow",
-                     credit: "Photo by Scott Bauer, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/k5629-2"),
-        "tools": Photo(asset: "photo-tools", blurHash: "L#Hf6gR+S6of%jofoga#S%oeV@WV", alt: "Tractor cultivating rows",
-                     credit: "Photo by Keith Weller, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/k5197-3"),
-        "eggs": Photo(asset: "photo-eggs", blurHash: "LaExj*s.oLWDoea|oKoK0jR+WVWC", alt: "Backlit eggs being candled",
-                     credit: "Photo by Steve Ausmus, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/featuredphoto/sep19/eggs/"),
-        "honey": Photo(asset: "photo-honey", blurHash: "LEIzCy3i*|5kGC;3K*M~1GvhF|SQ", alt: "Technician working a frame of honeycomb",
-                     credit: "Photo by Vanessa Corby-Harris, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/may15/d3413-1/"),
-        "garden": Photo(asset: "photo-garden", blurHash: "L8DT6AIo%d-;8|xt?aM{?wxtog%L", alt: "Broccoli and greens growing in a vegetable plot",
-                     credit: "Photo by USDA-ARS U.S. Vegetable Laboratory (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/sep17/d3832-1/"),
         "fruit": Photo(asset: "photo-fruit", blurHash: "LDD+YgH@WA0%rqspoz?E58?ZRRr?", alt: "Baskets of strawberries, blackberries and blueberries",
                      credit: "Photo by Scott Bauer, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/k7229-19"),
+        "eggs": Photo(asset: "photo-eggs", blurHash: "LcHvL.xZ0~n%wwr@WCW;0$RkxZbG", alt: "Basket of fresh eggs",
+                     credit: "Photo by lisafree54 via Flickr (CC0 1.0 (public domain dedication))", source: "https://www.flickr.com/photos/136594255@N06/25921784211"),
+        "dairy": Photo(asset: "photo-dairy", blurHash: "LPF={,pKD*9HD%E5x]%i.TkXS5RP", alt: "Cheese board with wedges of cheese",
+                     credit: "Photo by richardhe51067 via Flickr (CC0 1.0 (public domain dedication))", source: "https://www.flickr.com/photos/96218136@N08/51421814670"),
+        "meat": Photo(asset: "photo-meat", blurHash: "LCCs.~%K9HM{8zs:RkRj01RS%1jc", alt: "Sheep grazing in a mountain meadow",
+                     credit: "Photo by Scott Bauer, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/k5629-2"),
+        "honey": Photo(asset: "photo-honey", blurHash: "LWOL$5HX~qxB_2xVIVM|cFNZafRk", alt: "Jar of honey with honeycomb",
+                     credit: "Photo by Alabama Extension via Flickr (CC0 1.0 (public domain dedication))", source: "https://www.flickr.com/photos/184594136@N08/51331363379"),
+        "bread": Photo(asset: "photo-bread", blurHash: "LGLWnS?ZNGRq-p0N~Sxr%dxZ-m0g", alt: "Slices of assorted breads",
+                     credit: "Photo by Scott Bauer, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/k7251-46/"),
+        "herbs": Photo(asset: "photo-herbs", blurHash: "L5A-:yyP8#--?[n9n#ID%d%eMhVc", alt: "Peppermint and Corsican mint",
+                     credit: "Photo by Michael Thompson, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/k4424-2"),
         "seeds": Photo(asset: "photo-seeds", blurHash: "LII|~]I;tR-:~9I[bcR.%MIV%LNa", alt: "Dry bean seed varieties spilling from a seed packet",
                      credit: "Photo by Steve Ausmus, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/featuredphoto/mar24/drybeans/"),
+        "canning": Photo(asset: "photo-canning", blurHash: "LaLNrjRi-qso%2xua#of_NbINGbI", alt: "Jars of home-canned vegetables and preserves",
+                     credit: "Photo by Nutrition, Food Safety & Health via Flickr (CC0 1.0 (public domain dedication))", source: "https://www.flickr.com/photos/93936679@N05/51386017045"),
+        "firewood": Photo(asset: "photo-firewood", blurHash: "LGFFT:DN%MRPB=8{o}nO_NVYbwRO", alt: "Stacked split firewood",
+                     credit: "Photo by Forest Service - Northern Region via Flickr (Public Domain Mark 1.0)", source: "https://www.flickr.com/photos/40882383@N03/51881680612"),
+        "tools": Photo(asset: "photo-tools", blurHash: "L#Hf6gR+S6of%jofoga#S%oeV@WV", alt: "Tractor cultivating rows",
+                     credit: "Photo by Keith Weller, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/k5197-3"),
+        "livestock": Photo(asset: "photo-livestock", blurHash: "LKB|Wm9Z4.~CDkxaayNF56%2%2E1", alt: "Goat browsing in brush",
+                     credit: "Photo by Scott Bauer, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/oct99/k8595-9/"),
+        "bees": Photo(asset: "photo-bees", blurHash: "LcJF$SWB5%s=$Tj?NYoe1EfRoaR~", alt: "Honey bee on a pink cosmos flower",
+                     credit: "Photo by Peggy Greb, USDA-ARS (public domain)", source: "https://www.ars.usda.gov/oc/images/photos/featuredphoto/jun19/honeybees/"),
+        "garden": Photo(asset: "photo-garden", blurHash: "LFB|NZWT4mNK9bV@M_xuxcs:V]a#", alt: "Gardener walking between raised garden beds",
+                     credit: "Photo by USDAgov via Flickr (Public Domain Mark 1.0)", source: "https://www.flickr.com/photos/41284017@N08/52265246749"),
     ]
 
     /// Seeded listings that get a specific photo.
     private static let forImageName: [String: String] = [
         "item-cheddar": "dairy", "item-kraut": "vegetables", "item-lesson": "dairy", "item-lamb": "meat",
         "item-fleece": "meat", "item-fencing": "tools", "item-eggs": "eggs", "item-honey": "honey",
-        "item-greens": "garden", "item-raisedbed": "garden",
+        "item-greens": "garden", "item-raisedbed": "garden", "item-firewood": "firewood",
     ]
 
-    /// Everything else uses its category's photo. Wood has none yet, so it keeps the illustration.
+    /// Everything else uses its category's photo.
     private static let forCategory: [ItemCategory: String] = [
         .veggies: "vegetables", .fruit: "fruit", .meat: "meat", .dairy: "dairy",
-        .eggs: "eggs", .timeSkill: "tools", .other: "seeds",
+        .eggs: "eggs", .wood: "firewood", .timeSkill: "tools", .other: "seeds",
     ]
 
+    /// Seeded resources that get a specific cover photo; the rest use their topic's.
+    private static let forGuideTitle: [String: String] = [
+        "Lambing season checklist": "meat", "Overwintering bees in the Northeast": "bees",
+        "Splitting and seasoning firewood": "firewood", "Fresh mozzarella in 30 minutes": "dairy",
+    ]
+    private static let forTopic: [GuideTopic: String] = [
+        .recipe: "bread", .buildingPlan: "garden", .preserving: "canning",
+        .howTo: "tools", .animals: "livestock", .other: "herbs",
+    ]
+
+    static func forGuide(_ guide: Guide) -> Photo? {
+        gallery[forGuideTitle[guide.title] ?? forTopic[guide.topic] ?? ""]
+    }
+
     static func forItem(_ item: SpareItem) -> Photo? {
-        if item.imageName == "item-firewood" { return nil }
         guard let key = forImageName[item.imageName] ?? forCategory[item.category] else { return nil }
         return gallery[key]
     }

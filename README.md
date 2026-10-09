@@ -44,16 +44,22 @@ Data lives on the device (SwiftData), so it's one shared demo community per devi
 - An AI reviewer agent to assist admins with membership review.
 
 ## Credits
-Item photos are from the [USDA Agricultural Research Service Image Gallery](https://www.ars.usda.gov/oc/images/), which are public domain. Each one shows a blurred [BlurHash](https://blurha.sh) placeholder while it loads.
+Photos are from the [USDA Agricultural Research Service Image Gallery](https://www.ars.usda.gov/oc/images/) and [Openverse](https://openverse.org), and are all CC0 or public domain. Each one shows a blurred [BlurHash](https://blurha.sh) placeholder while it loads. Spare items use them, and each free resource gets a cover photo.
 
 - Vegetables: [Fresh beets and leafy greens](https://www.ars.usda.gov/oc/images/photos/featuredphoto/aug20/produce/). Photo by Peggy Greb, USDA-ARS (public domain).
-- Eggs: [Backlit eggs being candled](https://www.ars.usda.gov/oc/images/photos/featuredphoto/sep19/eggs/). Photo by Steve Ausmus, USDA-ARS (public domain).
-- Honey: [Technician working a frame of honeycomb](https://www.ars.usda.gov/oc/images/photos/may15/d3413-1/). Photo by Vanessa Corby-Harris, USDA-ARS (public domain).
-- Dairy: [Dairy cows at the fence](https://www.ars.usda.gov/oc/images/photos/featuredphoto/jun19/dairycows/). Photo by Keith Weller, USDA-ARS (public domain).
-- Meat: [Sheep grazing in a mountain meadow](https://www.ars.usda.gov/oc/images/photos/k5629-2). Photo by Scott Bauer, USDA-ARS (public domain).
-- Seeds: [Dry bean seed varieties spilling from a seed packet](https://www.ars.usda.gov/oc/images/photos/featuredphoto/mar24/drybeans/). Photo by Steve Ausmus, USDA-ARS (public domain).
-- Tools: [Tractor cultivating rows](https://www.ars.usda.gov/oc/images/photos/k5197-3). Photo by Keith Weller, USDA-ARS (public domain).
 - Fruit: [Baskets of strawberries, blackberries and blueberries](https://www.ars.usda.gov/oc/images/photos/k7229-19). Photo by Scott Bauer, USDA-ARS (public domain).
-- Garden: [Broccoli and greens growing in a vegetable plot](https://www.ars.usda.gov/oc/images/photos/sep17/d3832-1/). Photo by USDA-ARS U.S. Vegetable Laboratory (public domain).
+- Eggs: [Basket of fresh eggs](https://www.flickr.com/photos/136594255@N06/25921784211). Photo by lisafree54 via Flickr (CC0 1.0 (public domain dedication)).
+- Dairy: [Cheese board with wedges of cheese](https://www.flickr.com/photos/96218136@N08/51421814670). Photo by richardhe51067 via Flickr (CC0 1.0 (public domain dedication)).
+- Meat: [Sheep grazing in a mountain meadow](https://www.ars.usda.gov/oc/images/photos/k5629-2). Photo by Scott Bauer, USDA-ARS (public domain).
+- Honey: [Jar of honey with honeycomb](https://www.flickr.com/photos/184594136@N08/51331363379). Photo by Alabama Extension via Flickr (CC0 1.0 (public domain dedication)).
+- Bread: [Slices of assorted breads](https://www.ars.usda.gov/oc/images/photos/k7251-46/). Photo by Scott Bauer, USDA-ARS (public domain).
+- Herbs: [Peppermint and Corsican mint](https://www.ars.usda.gov/oc/images/photos/k4424-2). Photo by Michael Thompson, USDA-ARS (public domain).
+- Seeds: [Dry bean seed varieties spilling from a seed packet](https://www.ars.usda.gov/oc/images/photos/featuredphoto/mar24/drybeans/). Photo by Steve Ausmus, USDA-ARS (public domain).
+- Canning: [Jars of home-canned vegetables and preserves](https://www.flickr.com/photos/93936679@N05/51386017045). Photo by Nutrition, Food Safety & Health via Flickr (CC0 1.0 (public domain dedication)).
+- Firewood: [Stacked split firewood](https://www.flickr.com/photos/40882383@N03/51881680612). Photo by Forest Service - Northern Region via Flickr (Public Domain Mark 1.0).
+- Tools: [Tractor cultivating rows](https://www.ars.usda.gov/oc/images/photos/k5197-3). Photo by Keith Weller, USDA-ARS (public domain).
+- Livestock: [Goat browsing in brush](https://www.ars.usda.gov/oc/images/photos/oct99/k8595-9/). Photo by Scott Bauer, USDA-ARS (public domain).
+- Bees: [Honey bee on a pink cosmos flower](https://www.ars.usda.gov/oc/images/photos/featuredphoto/jun19/honeybees/). Photo by Peggy Greb, USDA-ARS (public domain).
+- Garden: [Gardener walking between raised garden beds](https://www.flickr.com/photos/41284017@N08/52265246749). Photo by USDAgov via Flickr (Public Domain Mark 1.0).
 
-Firewood and canning had no gallery photo, so they use illustrations from [Fluent Emoji](https://github.com/microsoft/fluentui-emoji) by Microsoft, MIT license. In the browser version, members can also add their own photo when listing an item.
+Fallback illustrations are from [Fluent Emoji](https://github.com/microsoft/fluentui-emoji) by Microsoft, MIT license. In the browser version, members can also add their own photo when listing an item.

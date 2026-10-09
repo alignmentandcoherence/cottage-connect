@@ -33,14 +33,21 @@ struct LearnView: View {
             }
             ForEach(visible) { guide in
                 NavigationLink(value: guide) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack {
-                            Text(guide.title).font(.headline)
-                            Spacer()
-                            Tag(text: guide.topic.rawValue, color: Theme.clay)
+                    HStack(alignment: .top, spacing: 12) {
+                        if let photo = Photo.forGuide(guide) {
+                            PhotoView(photo: photo)
+                                .frame(width: 56, height: 56)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
                         }
-                        Text(guide.body).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
-                        Text(byline(guide)).font(.caption).foregroundStyle(.secondary)
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack {
+                                Text(guide.title).font(.headline)
+                                Spacer()
+                                Tag(text: guide.topic.rawValue, color: Theme.clay)
+                            }
+                            Text(guide.body).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
+                            Text(byline(guide)).font(.caption).foregroundStyle(.secondary)
+                        }
                     }
                 }
             }
@@ -71,6 +78,15 @@ struct GuideDetailView: View {
         List {
             Section {
                 VStack(alignment: .leading, spacing: 12) {
+                    if let photo = Photo.forGuide(guide) {
+                        PhotoView(photo: photo)
+                            .frame(height: 200)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        if let url = URL(string: photo.source) {
+                            Link(photo.credit, destination: url)
+                                .font(.caption2).foregroundStyle(.secondary)
+                        }
+                    }
                     Tag(text: guide.topic.rawValue, color: Theme.clay)
                     Text(guide.title).font(.title.bold())
                     if let author = members.find(guide.authorID) {
