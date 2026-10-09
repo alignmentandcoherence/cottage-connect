@@ -42,3 +42,6 @@ Data lives on the device (SwiftData), so it's one shared demo community per devi
 - Push notifications for trades and connection requests.
 - Reporting posts and members (basic moderation).
 - An AI reviewer agent to assist admins with membership review.
+
+## Credits
+Item pictures are from [Fluent Emoji](https://github.com/microsoft/fluentui-emoji) by Microsoft, MIT license. In the browser version, members can also add their own photo when listing an item.

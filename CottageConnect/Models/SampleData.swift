@@ -39,22 +39,22 @@ enum SampleData {
         context.insert(Invite(createdByID: rosa.uid, code: "HARVEST", createdAt: ago(1)))
 
         let cheddar = SpareItem(ownerID: rosa.uid, title: "Aged cheddar", category: .dairy, quantity: "1 lb wheel",
-                                details: "Six months aged, cloth bound.", createdAt: ago(20))
-        let kraut = SpareItem(ownerID: rosa.uid, title: "Sauerkraut", category: .veggies, quantity: "2 quarts", createdAt: ago(30))
+                                details: "Six months aged, cloth bound.", imageName: "item-cheddar", createdAt: ago(20))
+        let kraut = SpareItem(ownerID: rosa.uid, title: "Sauerkraut", category: .veggies, quantity: "2 quarts", imageName: "item-kraut", createdAt: ago(30))
         let cheeseClass = SpareItem(ownerID: rosa.uid, title: "Cheesemaking lesson", category: .timeSkill, quantity: "2 hours",
-                                    details: "At my kitchen or yours. Fresh mozzarella or chèvre.", createdAt: ago(40))
+                                    details: "At my kitchen or yours. Fresh mozzarella or chèvre.", imageName: "item-lesson", createdAt: ago(40))
         let lamb = SpareItem(ownerID: eli.uid, title: "Lamb, half share", category: .meat, quantity: "About 20 lbs",
-                             details: "Pasture raised, butchered in November.", createdAt: ago(10))
-        let fleece = SpareItem(ownerID: eli.uid, title: "Raw fleece", category: .other, quantity: "12 lbs, skirted", createdAt: ago(50))
-        let fencing = SpareItem(ownerID: eli.uid, title: "Fence repair help", category: .timeSkill, quantity: "Half a day", createdAt: ago(60))
-        let eggs = SpareItem(ownerID: june.uid, title: "Pastured eggs", category: .eggs, quantity: "2 dozen a week", createdAt: ago(5))
-        let honey = SpareItem(ownerID: june.uid, title: "Wildflower honey", category: .other, quantity: "1 quart jars", createdAt: ago(15))
+                             details: "Pasture raised, butchered in November.", imageName: "item-lamb", createdAt: ago(10))
+        let fleece = SpareItem(ownerID: eli.uid, title: "Raw fleece", category: .other, quantity: "12 lbs, skirted", imageName: "item-fleece", createdAt: ago(50))
+        let fencing = SpareItem(ownerID: eli.uid, title: "Fence repair help", category: .timeSkill, quantity: "Half a day", imageName: "item-fencing", createdAt: ago(60))
+        let eggs = SpareItem(ownerID: june.uid, title: "Pastured eggs", category: .eggs, quantity: "2 dozen a week", imageName: "item-eggs", createdAt: ago(5))
+        let honey = SpareItem(ownerID: june.uid, title: "Wildflower honey", category: .other, quantity: "1 quart jars", imageName: "item-honey", createdAt: ago(15))
         let greens = SpareItem(ownerID: june.uid, title: "Fall greens box", category: .veggies, quantity: "Weekly through November",
-                               details: "Kale, chard, lettuce, and whatever else is thriving.", createdAt: ago(25))
+                               details: "Kale, chard, lettuce, and whatever else is thriving.", imageName: "item-greens", createdAt: ago(25))
         let firewood = SpareItem(ownerID: sam.uid, title: "Seasoned firewood", category: .wood, quantity: "1/2 cord",
-                                 details: "Oak and maple, split and dry. Can deliver locally.", createdAt: ago(8))
+                                 details: "Oak and maple, split and dry. Can deliver locally.", imageName: "item-firewood", createdAt: ago(8))
         let raisedBed = SpareItem(ownerID: sam.uid, title: "Build a raised bed", category: .timeSkill, quantity: "One 4x8 bed",
-                                  details: "You supply lumber or I use my cedar offcuts.", createdAt: ago(35))
+                                  details: "You supply lumber or I use my cedar offcuts.", imageName: "item-raisedbed", createdAt: ago(35))
         [cheddar, kraut, cheeseClass, lamb, fleece, fencing, eggs, honey, greens, firewood, raisedBed]
             .forEach { context.insert($0) }
 

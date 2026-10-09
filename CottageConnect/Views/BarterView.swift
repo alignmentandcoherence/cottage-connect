@@ -93,6 +93,8 @@ struct ItemDetailView: View {
         List {
             Section {
                 VStack(alignment: .leading, spacing: 8) {
+                    ItemImage(item: item, padding: 24)
+                        .frame(height: 200)
                     Label(item.category.rawValue, systemImage: item.category.icon)
                         .font(.subheadline).foregroundStyle(Theme.moss)
                     Text(item.title).font(.title2.bold())

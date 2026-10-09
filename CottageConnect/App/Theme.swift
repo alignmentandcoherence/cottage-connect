@@ -50,10 +50,8 @@ struct ItemRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: item.category.icon)
-                .font(.title3)
-                .foregroundStyle(Theme.moss)
-                .frame(width: 32)
+            ItemImage(item: item)
+                .frame(width: 48, height: 48)
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.title).font(.headline)
                 Text([item.quantity, ownerName ?? ""].filter { !$0.isEmpty }.joined(separator: " · "))
@@ -62,6 +60,21 @@ struct ItemRow: View {
             Spacer()
             if !item.isAvailable { Tag(text: "Traded", color: .secondary) }
         }
+    }
+}
+
+/// The listing's picture on a soft moss tile.
+struct ItemImage: View {
+    let item: SpareItem
+    var padding: CGFloat = 6
+
+    var body: some View {
+        Image(item.imageName)
+            .resizable()
+            .scaledToFit()
+            .padding(padding)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Theme.moss.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
     }
 }
 

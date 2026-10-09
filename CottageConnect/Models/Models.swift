@@ -114,6 +114,20 @@ enum ItemCategory: String, Codable, CaseIterable, Identifiable {
         case .other: "shippingbox"
         }
     }
+
+    /// Picture used when a listing has no picture of its own.
+    var defaultImage: String {
+        switch self {
+        case .veggies: "item-veggies"
+        case .fruit: "item-fruit"
+        case .meat: "item-lamb"
+        case .dairy: "item-dairy"
+        case .eggs: "item-eggs"
+        case .wood: "item-firewood"
+        case .timeSkill: "item-timeskill"
+        case .other: "item-other"
+        }
+    }
 }
 
 /// Something a member can spare and is willing to barter.
@@ -127,9 +141,12 @@ final class SpareItem {
     var details: String
     var isAvailable: Bool
     var createdAt: Date
+    /// Name of a picture in the asset catalog.
+    var imageName: String = "item-other"
 
     init(ownerID: UUID, title: String, category: ItemCategory, quantity: String = "",
-         details: String = "", createdAt: Date = .now) {
+         details: String = "", imageName: String? = nil, createdAt: Date = .now) {
+        self.imageName = imageName ?? category.defaultImage
         self.uid = UUID()
         self.ownerID = ownerID
         self.title = title
