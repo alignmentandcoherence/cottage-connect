@@ -1,0 +1,27 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        destination: ["generic/platform=macOS", "generic/platform=iOS Simulator"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          xcodegen generate
+      - name: Build
+        run: |
+          xcodebuild build \
+            -project CottageConnect.xcodeproj \
+            -scheme CottageConnect \
+            -destination "${{ matrix.destination }}" \
+            CODE_SIGNING_ALLOWED=NO
