@@ -114,6 +114,20 @@ enum ItemCategory: String, Codable, CaseIterable, Identifiable {
         case .other: "shippingbox"
         }
     }
+
+    /// Picture used when a listing has no picture of its own.
+    var defaultImage: String {
+        switch self {
+        case .veggies: "item-veggies"
+        case .fruit: "item-fruit"
+        case .meat: "item-lamb"
+        case .dairy: "item-dairy"
+        case .eggs: "item-eggs"
+        case .wood: "item-firewood"
+        case .timeSkill: "item-timeskill"
+        case .other: "item-other"
+        }
+    }
 }
 
 /// Something a member can spare and is willing to barter.
@@ -127,9 +141,12 @@ final class SpareItem {
     var details: String
     var isAvailable: Bool
     var createdAt: Date
+    /// Name of a picture in the asset catalog.
+    var imageName: String = "item-other"
 
     init(ownerID: UUID, title: String, category: ItemCategory, quantity: String = "",
-         details: String = "", createdAt: Date = .now) {
+         details: String = "", imageName: String? = nil, createdAt: Date = .now) {
+        self.imageName = imageName ?? category.defaultImage
         self.uid = UUID()
         self.ownerID = ownerID
         self.title = title
@@ -213,16 +230,16 @@ final class TradeEvent {
 }
 
 enum GuideTopic: String, Codable, CaseIterable, Identifiable {
-    case growing = "Growing"
-    case preserving = "Preserving"
-    case animals = "Animals"
-    case crafts = "Crafts"
-    case building = "Building"
+    case recipe = "Recipe"
+    case buildingPlan = "Building plan"
+    case preserving = "Canning & preserving"
+    case howTo = "How-to"
+    case animals = "Animal care"
     case other = "Other"
     var id: String { rawValue }
 }
 
-/// Shared know-how: a how-to, tip, or reference written by a member.
+/// A free resource anyone can read: a recipe, building plan, canning instructions, or how-to.
 @Model
 final class Guide {
     var uid: UUID
@@ -231,8 +248,11 @@ final class Guide {
     var topic: GuideTopic
     var body: String
     var createdAt: Date
+    /// An optional photo or drawing, such as a recipe card or plan.
+    @Attribute(.externalStorage) var attachment: Data?
 
-    init(authorID: UUID, title: String, topic: GuideTopic, body: String, createdAt: Date = .now) {
+    init(authorID: UUID, title: String, topic: GuideTopic, body: String, attachment: Data? = nil, createdAt: Date = .now) {
+        self.attachment = attachment
         self.uid = UUID()
         self.authorID = authorID
         self.title = title

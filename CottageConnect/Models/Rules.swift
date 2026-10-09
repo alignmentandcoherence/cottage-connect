@@ -40,12 +40,13 @@ enum Barter {
 
 enum CommentRules {
     /// Anyone other than the poster gets one comment, and another each time the poster replies to them.
-    static func canComment(on post: Post, as memberID: UUID, comments: [Comment]) -> Bool {
-        if post.authorID == memberID { return true }
-        let onPost = comments.filter { $0.postID == post.uid }
-        guard let lastMine = onPost.filter({ $0.authorID == memberID }).map(\.createdAt).max() else { return true }
-        return onPost.contains {
-            $0.authorID == post.authorID && $0.replyToAuthorID == memberID && $0.createdAt > lastMine
+    /// Applies to community posts and free resources alike; `threadID` is the post's or resource's uid.
+    static func canComment(on threadID: UUID, ownedBy ownerID: UUID, as memberID: UUID, comments: [Comment]) -> Bool {
+        if ownerID == memberID { return true }
+        let onThread = comments.filter { $0.postID == threadID }
+        guard let lastMine = onThread.filter({ $0.authorID == memberID }).map(\.createdAt).max() else { return true }
+        return onThread.contains {
+            $0.authorID == ownerID && $0.replyToAuthorID == memberID && $0.createdAt > lastMine
         }
     }
 }
